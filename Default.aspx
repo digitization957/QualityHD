@@ -8,69 +8,89 @@
     <link href="Content/bootstrap.min.css" rel="stylesheet" />
     <style>
         :root {
-            --accent: #1d4e6b;
-            --accent-soft: #e4edf1;
-            --ease-settle: cubic-bezier(0.22, 1, 0.36, 1);
-            --ease-exit: cubic-bezier(0.5, 0, 0.75, 0);
+            --teal: #0e5f57;
+            --teal-soft: #e2efec;
+            --teal-glow: rgba(14, 95, 87, 0.16);
+            --gold: #b8791f;
+            --gold-soft: #f7ecd8;
+            --good: #2f7a4f;
+            --good-soft: #e4f1e8;
+            --ink-faint: #9aa39d;
+            --line: #e1dfd6;
+            --font-display: "Bahnschrift", "Segoe UI Variable Display", "Segoe UI", -apple-system, "Helvetica Neue", Arial, sans-serif;
+            --font-body: "Segoe UI Variable Text", "Segoe UI", -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+            --font-mono: "Cascadia Code", ui-monospace, Consolas, monospace;
         }
-        body { background: #edeee7; font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
-        .navbar { position: sticky; top: 0; z-index: 20; background: rgba(27,35,33,0.82) !important; backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); border-bottom: 1px solid rgba(255,255,255,0.08); }
-        .navbar-brand { font-weight: 600; letter-spacing: -0.005em; }
-        .table-responsive { background: #fff; border-radius: .5rem; }
-        .section-title { font-weight: 600; letter-spacing: 0.02em; margin-top: 1.25rem; margin-bottom: .5rem; border-bottom: 1px solid #dee2e6; padding-bottom: .25rem; }
-        .plant-block { background: #f8f9fa; border: 1px solid #e9ecef; border-radius: .375rem; padding: .75rem; margin-bottom: .75rem; }
+        body { background: #f3f2ee; font-family: var(--font-body); }
+        .navbar { background: #fff !important; border-bottom: 1px solid var(--line); }
+        .navbar-brand { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.01em; color: #1c2320 !important; display: flex; align-items: center; gap: 0.6rem; }
+        .brand-mark { width: 30px; height: 30px; border-radius: 8px; background: linear-gradient(155deg, var(--teal), #0a4841); color: #fff; font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; }
+        .role-chip { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase; background: var(--teal-soft); color: var(--teal); padding: 0.3rem 0.65rem; border-radius: 100px; }
+        h1, h2, h3, h5, .section-title { font-family: var(--font-display); }
+
+        .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.9rem; margin-bottom: 1.5rem; }
+        @media (max-width: 820px) { .stats-row { grid-template-columns: repeat(2, 1fr); } }
+        .stat-tile { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 1rem 1.1rem; box-shadow: 0 1px 2px rgba(28,35,32,.04), 0 8px 24px -12px rgba(28,35,32,.12); }
+        .stat-tile__label { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.03em; color: #6b7570; margin-bottom: 0.35rem; }
+        .stat-tile__value { font-family: var(--font-display); font-size: 1.6rem; font-weight: 700; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; color: #1c2320; }
+        .stat-tile__value.c-teal { color: var(--teal); }
+        .stat-tile__value.c-gold { color: var(--gold); }
+        .stat-tile__value.c-good { color: var(--good); }
+
+        .table-responsive { background: #fff; border-radius: 12px; box-shadow: 0 1px 2px rgba(28,35,32,.04), 0 8px 24px -12px rgba(28,35,32,.12); }
+        .table-light th { font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-faint); }
+        .mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+        .pill-plant { display: inline-block; font-size: 0.7rem; font-weight: 600; padding: 0.16rem 0.5rem; border-radius: 100px; background: #e6edf8; color: #3060a8; font-family: var(--font-mono); margin: 0 0.15rem 0.15rem 0; }
+        .pill-type { font-size: 0.7rem; font-weight: 600; padding: 0.16rem 0.5rem; border-radius: 100px; }
+        .pill-type-reactive { background: var(--gold-soft); color: var(--gold); }
+        .pill-type-proactive { background: var(--good-soft); color: var(--good); }
+
+        .section-title { font-weight: 600; font-size: 1.02rem; letter-spacing: -0.005em; margin-top: 1.5rem; margin-bottom: .35rem; border-bottom: none; padding-bottom: 0; color: #1c2320; }
+        .plant-block { background: #faf9f6; border: 1px solid var(--line); border-radius: .5rem; padding: .75rem; margin-bottom: .75rem; }
         .required-mark { color: #dc3545; }
 
-        .btn { transition: transform 120ms var(--ease-settle), filter 120ms var(--ease-settle); }
-        .btn:active { transform: scale(0.96); }
-        .btn-primary { background: var(--accent); border-color: var(--accent); }
-        .btn-primary:hover { filter: brightness(1.08); }
-        .form-control:focus, .form-select:focus { border-color: var(--accent); box-shadow: 0 0 0 0.2rem var(--accent-soft); }
-
-        /* Bootstrap modal: settle in with no overshoot, anchored to the button that opened it */
-        .modal.fade .modal-dialog { transition: transform 240ms var(--ease-settle), opacity 240ms var(--ease-settle); transform: scale(0.92) translateY(6px); opacity: 0; transform-origin: 85% 0; }
-        .modal.show .modal-dialog { transform: scale(1) translateY(0); opacity: 1; }
-        .modal.fade:not(.show) .modal-dialog { transition-duration: 160ms; transition-timing-function: var(--ease-exit); }
-
-        tbody tr.row-enter { animation: rowEnter 420ms var(--ease-settle) both; }
-        @keyframes rowEnter {
-            from { opacity: 0; transform: translateY(-6px); background-color: var(--accent-soft); }
-            60% { background-color: var(--accent-soft); }
-            to { opacity: 1; transform: translateY(0); background-color: transparent; }
-        }
+        .btn-primary { background: var(--teal); border-color: var(--teal); }
+        .btn-primary:hover { filter: brightness(1.08); background: var(--teal); border-color: var(--teal); }
+        .form-control:focus, .form-select:focus { border-color: var(--teal); box-shadow: 0 0 0 3px var(--teal-glow); }
 
         .toast-confirm {
             position: fixed; right: 1.25rem; bottom: 1.25rem; z-index: 60;
-            background: #1b2321; color: #edeee7; padding: 0.7rem 1rem; border-radius: 8px; font-size: 0.84rem;
-            display: flex; align-items: center; gap: 0.55rem; box-shadow: 0 16px 40px -18px rgba(0,0,0,0.5);
-            opacity: 0; transform: translateY(10px) scale(0.98); transition: opacity 220ms var(--ease-settle), transform 220ms var(--ease-settle);
+            background: #1c2320; color: #f3f2ee; padding: 0.75rem 1.05rem; border-radius: 10px; font-size: 0.85rem;
+            display: flex; align-items: center; gap: 0.6rem; box-shadow: 0 20px 60px -20px rgba(0,0,0,0.5);
+            opacity: 0; transform: translateY(8px); transition: opacity 180ms ease, transform 180ms ease;
             pointer-events: none;
         }
-        .toast-confirm.show { opacity: 1; transform: translateY(0) scale(1); }
-        .toast-confirm__dot { width: 7px; height: 7px; border-radius: 50%; background: #2f7a4f; flex: none; }
+        .toast-confirm.show { opacity: 1; transform: translateY(0); }
+        .toast-confirm__dot { width: 7px; height: 7px; border-radius: 50%; background: var(--good); flex: none; }
 
-        @media (prefers-reduced-motion: reduce) {
-            .btn, .modal.fade .modal-dialog, .toast-confirm { transition-duration: 1ms !important; }
-            .modal.fade .modal-dialog { transform: none !important; }
-            tbody tr.row-enter { animation-duration: 1ms !important; }
-        }
+        @media (prefers-reduced-motion: reduce) { * { transition-duration: 1ms !important; } }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-dark bg-dark mb-4">
+    <nav class="navbar mb-4">
         <div class="container-fluid">
-            <span class="navbar-brand">QualityHD - HD Improvement Log</span>
+            <span class="navbar-brand"><span class="brand-mark">HD</span> QualityHD &mdash; HD Improvement Log</span>
             <span class="d-flex align-items-center">
-                <span class="badge bg-secondary me-3" id="roleBadge">Role</span>
-                <button type="button" id="btnLogout" class="btn btn-outline-light btn-sm">Logout</button>
+                <span class="role-chip me-3" id="roleBadge">Role</span>
+                <button type="button" id="btnLogout" class="btn btn-outline-secondary btn-sm">Logout</button>
             </span>
         </div>
     </nav>
 
     <div class="container-fluid">
-        <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="stats-row">
+            <div class="stat-tile"><div class="stat-tile__label">Total items</div><div class="stat-tile__value" id="statTotal">0</div></div>
+            <div class="stat-tile"><div class="stat-tile__label">Reactive</div><div class="stat-tile__value c-gold" id="statReactive">0</div></div>
+            <div class="stat-tile"><div class="stat-tile__label">Proactive</div><div class="stat-tile__value c-good" id="statProactive">0</div></div>
+            <div class="stat-tile"><div class="stat-tile__label">Plants covered</div><div class="stat-tile__value c-teal" id="statPlants">0</div></div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
             <h5 class="mb-0">Improvement Items</h5>
-            <button type="button" id="btnAddNew" class="btn btn-primary">+ Add New Item</button>
+            <div class="d-flex align-items-center gap-2">
+                <input type="text" id="searchInput" class="form-control form-control-sm" style="width:220px;" placeholder="Search theme or plant…" />
+                <button type="button" id="btnAddNew" class="btn btn-primary">+ Add New Item</button>
+            </div>
         </div>
 
         <div id="loadError" class="alert alert-danger d-none"></div>

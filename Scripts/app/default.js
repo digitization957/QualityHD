@@ -37,6 +37,68 @@ function showToast(text) {
     toastTimer = setTimeout(function () { $toast.removeClass('show'); }, 2400);
 }
 
+var allItems = [];
+var searchTerm = '';
+
+function renderStats(items) {
+    $('#statTotal').text(items.length);
+    $('#statReactive').text(items.filter(function (i) { return i.improvementType === 'Reactive'; }).length);
+    $('#statProactive').text(items.filter(function (i) { return i.improvementType === 'Proactive'; }).length);
+    var plantSet = {};
+    items.forEach(function (i) { i.hdApplicablePlants.split(',').forEach(function (p) { plantSet[p] = true; }); });
+    $('#statPlants').text(Object.keys(plantSet).length);
+}
+
+function renderItems(highlightId) {
+    renderStats(allItems);
+
+    var filtered = allItems.filter(function (item) {
+        if (!searchTerm) return true;
+        var hay = (item.hdTheme + ' ' + item.hdApplicablePlants + ' ' + item.hdSourcePlant).toLowerCase();
+        return hay.indexOf(searchTerm) !== -1;
+    });
+
+    var $body = $('#itemsBody').empty();
+
+    if (filtered.length === 0) {
+        $('#emptyState').removeClass('d-none').text(
+            allItems.length === 0 ? 'No improvement items logged yet.' : 'No items match your search.'
+        );
+        return;
+    }
+    $('#emptyState').addClass('d-none');
+
+    $.each(filtered, function (i, item) {
+        var $row = $('<tr>');
+        if (highlightId && item.id === highlightId) { $row.addClass('row-enter'); }
+
+        var typePillClass = item.improvementType === 'Reactive' ? 'pill-type-reactive' : 'pill-type-proactive';
+        var $plants = $('<td>');
+        $.each(item.hdApplicablePlants.split(','), function (i, p) {
+            $('<span class="pill-plant">').text(p).appendTo($plants);
+        });
+
+        $row.append($('<td class="mono">').text(item.id));
+        $row.append($('<td>').text(item.hdTheme));
+        $row.append($('<td>').append($('<span class="pill-type ' + typePillClass + '">').text(item.improvementType)));
+        $row.append($('<td class="mono">').text(item.hdSourcePlant));
+        $row.append($('<td>').text(item.aggregateType));
+        $row.append($('<td class="mono">').text(item.modelFamily));
+        $row.append($('<td>').text(item.issueSource));
+        $row.append($('<td class="mono">').text(item.casesCount));
+        $row.append($('<td>').text(item.improvementCategory));
+        $row.append($plants);
+        $row.append($('<td>').text(item.createdByRole));
+        $row.append($('<td class="mono">').text(item.createdAt));
+        $body.append($row);
+    });
+}
+
+$('#searchInput').on('input', function () {
+    searchTerm = $(this).val().trim().toLowerCase();
+    renderItems();
+});
+
 function loadItems(highlightId) {
     authAjax({
         type: 'POST',
@@ -45,33 +107,9 @@ function loadItems(highlightId) {
         contentType: 'application/json; charset=utf-8',
         dataType: 'json'
     }).done(function (response) {
-        var items = response.d;
-        var $body = $('#itemsBody').empty();
+        allItems = response.d || [];
         $('#loadError').addClass('d-none');
-
-        if (!items || items.length === 0) {
-            $('#emptyState').removeClass('d-none');
-            return;
-        }
-        $('#emptyState').addClass('d-none');
-
-        $.each(items, function (i, item) {
-            var $row = $('<tr>');
-            if (highlightId && item.id === highlightId) { $row.addClass('row-enter'); }
-            $row.append($('<td>').text(item.id));
-            $row.append($('<td>').text(item.hdTheme));
-            $row.append($('<td>').text(item.improvementType));
-            $row.append($('<td>').text(item.hdSourcePlant));
-            $row.append($('<td>').text(item.aggregateType));
-            $row.append($('<td>').text(item.modelFamily));
-            $row.append($('<td>').text(item.issueSource));
-            $row.append($('<td>').text(item.casesCount));
-            $row.append($('<td>').text(item.improvementCategory));
-            $row.append($('<td>').text(item.hdApplicablePlants));
-            $row.append($('<td>').text(item.createdByRole));
-            $row.append($('<td>').text(item.createdAt));
-            $body.append($row);
-        });
+        renderItems(highlightId);
     }).fail(function (xhr) {
         if (xhr.status !== 401) {
             $('#loadError').removeClass('d-none').text('Could not load items. Please refresh.');

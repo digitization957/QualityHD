@@ -28,7 +28,16 @@ function escapeHtml(value) {
     return $('<div>').text(value == null ? '' : value).html();
 }
 
-function loadItems() {
+var toastTimer = null;
+function showToast(text) {
+    var $toast = $('#toastConfirm');
+    $('#toastConfirmText').text(text);
+    $toast.addClass('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { $toast.removeClass('show'); }, 2400);
+}
+
+function loadItems(highlightId) {
     authAjax({
         type: 'POST',
         url: 'Default.aspx/GetItems',
@@ -48,6 +57,7 @@ function loadItems() {
 
         $.each(items, function (i, item) {
             var $row = $('<tr>');
+            if (highlightId && item.id === highlightId) { $row.addClass('row-enter'); }
             $row.append($('<td>').text(item.id));
             $row.append($('<td>').text(item.hdTheme));
             $row.append($('<td>').text(item.improvementType));
@@ -179,9 +189,11 @@ $('#btnSaveItem').on('click', function () {
         data: JSON.stringify(payload),
         contentType: 'application/json; charset=utf-8',
         dataType: 'json'
-    }).done(function () {
+    }).done(function (response) {
         bootstrap.Modal.getInstance(document.getElementById('addItemModal')).hide();
-        loadItems();
+        var newId = response && response.d && response.d.id;
+        loadItems(newId);
+        showToast('HD item' + (newId ? ' #' + newId : '') + ' saved');
     }).fail(function (xhr) {
         var msg = 'Could not save item.';
         try { msg = JSON.parse(xhr.responseText).Message || msg; } catch (e) { }

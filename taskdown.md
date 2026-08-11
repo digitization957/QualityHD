@@ -4,3 +4,5 @@
 - Built Default.aspx: HD item list (loaded via WebMethod) + "Add New Item" modal with the full form from HD.md, saving via WebMethod into MySQL with server-side whitelist validation on every field.
 - Added secure file upload handler (UploadHandler.ashx) with extension/size whitelisting, GUID filenames, storage under App_Data (blocked from direct web access).
 - VAPT hardening: parameterized SQL everywhere, JWT required (Authorization: Bearer) on every WebMethod/handler, strict CSP + security headers in Web.config, JS moved to external files (no inline `<script>`, CSP-safe), least-privilege DB user instead of root.
+- Fixed `packages.config` (was missing all 10 new NuGet packages after adding MySqlConnector — would've broken `nuget restore`).
+- Redesigned Login.aspx / Default.aspx per the apple-design skill: translucent sticky topbar, spring-like modal open/close (no overshoot, anchored top-right toward the trigger), tap feedback on buttons, causal "saved" toast, new-row highlight animation, typographic tracking pass, full `prefers-reduced-motion` support. Published an interactive preview artifact of the same redesign.

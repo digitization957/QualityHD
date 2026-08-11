@@ -7,12 +7,53 @@
     <title>QualityHD - HD Improvement Log</title>
     <link href="Content/bootstrap.min.css" rel="stylesheet" />
     <style>
-        body { background: #f2f4f7; }
-        .navbar-brand { font-weight: 600; }
+        :root {
+            --accent: #1d4e6b;
+            --accent-soft: #e4edf1;
+            --ease-settle: cubic-bezier(0.22, 1, 0.36, 1);
+            --ease-exit: cubic-bezier(0.5, 0, 0.75, 0);
+        }
+        body { background: #edeee7; font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+        .navbar { position: sticky; top: 0; z-index: 20; background: rgba(27,35,33,0.82) !important; backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .navbar-brand { font-weight: 600; letter-spacing: -0.005em; }
         .table-responsive { background: #fff; border-radius: .5rem; }
-        .section-title { font-weight: 600; margin-top: 1.25rem; margin-bottom: .5rem; border-bottom: 1px solid #dee2e6; padding-bottom: .25rem; }
+        .section-title { font-weight: 600; letter-spacing: 0.02em; margin-top: 1.25rem; margin-bottom: .5rem; border-bottom: 1px solid #dee2e6; padding-bottom: .25rem; }
         .plant-block { background: #f8f9fa; border: 1px solid #e9ecef; border-radius: .375rem; padding: .75rem; margin-bottom: .75rem; }
         .required-mark { color: #dc3545; }
+
+        .btn { transition: transform 120ms var(--ease-settle), filter 120ms var(--ease-settle); }
+        .btn:active { transform: scale(0.96); }
+        .btn-primary { background: var(--accent); border-color: var(--accent); }
+        .btn-primary:hover { filter: brightness(1.08); }
+        .form-control:focus, .form-select:focus { border-color: var(--accent); box-shadow: 0 0 0 0.2rem var(--accent-soft); }
+
+        /* Bootstrap modal: settle in with no overshoot, anchored to the button that opened it */
+        .modal.fade .modal-dialog { transition: transform 240ms var(--ease-settle), opacity 240ms var(--ease-settle); transform: scale(0.92) translateY(6px); opacity: 0; transform-origin: 85% 0; }
+        .modal.show .modal-dialog { transform: scale(1) translateY(0); opacity: 1; }
+        .modal.fade:not(.show) .modal-dialog { transition-duration: 160ms; transition-timing-function: var(--ease-exit); }
+
+        tbody tr.row-enter { animation: rowEnter 420ms var(--ease-settle) both; }
+        @keyframes rowEnter {
+            from { opacity: 0; transform: translateY(-6px); background-color: var(--accent-soft); }
+            60% { background-color: var(--accent-soft); }
+            to { opacity: 1; transform: translateY(0); background-color: transparent; }
+        }
+
+        .toast-confirm {
+            position: fixed; right: 1.25rem; bottom: 1.25rem; z-index: 60;
+            background: #1b2321; color: #edeee7; padding: 0.7rem 1rem; border-radius: 8px; font-size: 0.84rem;
+            display: flex; align-items: center; gap: 0.55rem; box-shadow: 0 16px 40px -18px rgba(0,0,0,0.5);
+            opacity: 0; transform: translateY(10px) scale(0.98); transition: opacity 220ms var(--ease-settle), transform 220ms var(--ease-settle);
+            pointer-events: none;
+        }
+        .toast-confirm.show { opacity: 1; transform: translateY(0) scale(1); }
+        .toast-confirm__dot { width: 7px; height: 7px; border-radius: 50%; background: #2f7a4f; flex: none; }
+
+        @media (prefers-reduced-motion: reduce) {
+            .btn, .modal.fade .modal-dialog, .toast-confirm { transition-duration: 1ms !important; }
+            .modal.fade .modal-dialog { transform: none !important; }
+            tbody tr.row-enter { animation-duration: 1ms !important; }
+        }
     </style>
 </head>
 <body>
@@ -279,6 +320,8 @@
             </div>
         </div>
     </div>
+
+    <div class="toast-confirm" id="toastConfirm"><span class="toast-confirm__dot"></span><span id="toastConfirmText">Saved</span></div>
 
     <script src="Scripts/jquery-3.7.0.min.js"></script>
     <script src="Scripts/bootstrap.bundle.min.js"></script>

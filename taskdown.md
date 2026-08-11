@@ -1,0 +1,6 @@
+- Installed MySQL 8.4 locally (Windows service `MySQL84`), created `qualityhd` DB + `hd_items` table + least-privilege `qualityhd_app` DB user.
+- Added MySqlConnector driver (NuGet, net48) with correct binding redirects; no ASP controllers used anywhere.
+- Built fake login (Login.aspx) that mints a signed JWT (token+role) server-side via WebMethod, stored in sessionStorage.
+- Built Default.aspx: HD item list (loaded via WebMethod) + "Add New Item" modal with the full form from HD.md, saving via WebMethod into MySQL with server-side whitelist validation on every field.
+- Added secure file upload handler (UploadHandler.ashx) with extension/size whitelisting, GUID filenames, storage under App_Data (blocked from direct web access).
+- VAPT hardening: parameterized SQL everywhere, JWT required (Authorization: Bearer) on every WebMethod/handler, strict CSP + security headers in Web.config, JS moved to external files (no inline `<script>`, CSP-safe), least-privilege DB user instead of root.

@@ -8,7 +8,7 @@ namespace QualityHD
 {
     public partial class Login : System.Web.UI.Page
     {
-        private static readonly string[] AllowedRoles = { "User", "Admin" };
+        private const string OnlyRole = "User"; // single role for now — add more here if that changes
         private static readonly Regex TokenPattern = new Regex("^[A-Za-z0-9-]{8,64}$");
 
         protected void Page_Load(object sender, EventArgs e)
@@ -21,19 +21,16 @@ namespace QualityHD
         // simulated launcher lets the plant be picked manually instead.
         [WebMethod(EnableSession = false)]
         [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
-        public static object GenerateToken(string token, string role, string plant)
+        public static object GenerateToken(string token, string plant)
         {
             if (string.IsNullOrWhiteSpace(token) || !TokenPattern.IsMatch(token))
                 throw new InvalidOperationException("Invalid token format.");
 
-            if (string.IsNullOrWhiteSpace(role) || Array.IndexOf(AllowedRoles, role) < 0)
-                throw new InvalidOperationException("Invalid role.");
-
             if (string.IsNullOrWhiteSpace(plant) || Array.IndexOf(HdOptions.Plants, plant) < 0)
                 throw new InvalidOperationException("Invalid plant.");
 
-            string jwt = JwtHelper.Issue(token, role, plant);
-            return new { jwt = jwt, role = role, plant = plant };
+            string jwt = JwtHelper.Issue(token, OnlyRole, plant);
+            return new { jwt = jwt, role = OnlyRole, plant = plant };
         }
     }
 }

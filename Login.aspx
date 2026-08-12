@@ -57,14 +57,6 @@
                 <input type="text" id="txtToken" class="form-control" readonly />
             </div>
 
-            <div class="mb-3">
-                <label for="ddlRole" class="form-label">Role</label>
-                <select id="ddlRole" class="form-select">
-                    <option value="User" selected="selected">User</option>
-                    <option value="Admin">Admin</option>
-                </select>
-            </div>
-
             <div class="mb-4">
                 <label for="ddlPlant" class="form-label">Plant</label>
                 <select id="ddlPlant" class="form-select">

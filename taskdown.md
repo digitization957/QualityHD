@@ -12,3 +12,5 @@
 - Added plant-aware auth: JWT now carries a `plant` claim (Login.aspx simulates picking it, since production DBs `access.login_tokenpass` + `plant_master.tbl_Plant` aren't reachable from dev); added PlantHelper.cs with the real production resolver query, ready to wire in once those DBs are reachable (connection strings added as placeholders in Web.config).
 - Default.aspx: added All / Own / Assigned filter pills — Own = items this plant logged (hd_source_plant), Assigned = items other plants logged that list this plant in hd_applicable_plants. GetItems WebMethod now takes a `scope` param and filters server-side with parameterized SQL (FIND_IN_SET).
 - Navbar now shows the logged-in plant next to the role chip.
+- Removed Admin role — app only has one role (User) for now; dropped the Role dropdown from Login.aspx and simplified GenerateToken to always issue "User".
+- Modal textareas (Description, Analysis details, Action details, per-plant HD details) are now fixed-height with internal scroll instead of growing, capped at 250 chars, with a live "x / 250" counter (amber near limit, red at limit). Backend validation limits updated to match (250, was 4000).

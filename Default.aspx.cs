@@ -103,12 +103,12 @@ namespace QualityHD
             string improvementType = RequireOneOf(item.improvementType, HdOptions.ImprovementTypes, "Improvement Type");
             string hdSourcePlant = RequireOneOf(item.hdSourcePlant, HdOptions.Plants, "HD Source Plant");
             string aggregateType = RequireOneOf(item.aggregateType, HdOptions.Aggregates, "Aggregate");
-            string description = Require(item.description, "Description", 4000);
+            string description = Require(item.description, "Description", 250);
             string modelFamily = RequireOneOf(item.modelFamily, HdOptions.ModelFamilies, "Model Family");
             string issueSource = RequireOneOf(item.issueSource, HdOptions.IssueSources, "Issue Source");
             int casesCount = RequireInt(item.casesCount, "Cases");
-            string analysisDetails = Require(item.analysisDetails, "Analysis details", 4000);
-            string actionDetails = Require(item.actionDetails, "Action / Improvement details", 4000);
+            string analysisDetails = Require(item.analysisDetails, "Analysis details", 250);
+            string actionDetails = Require(item.actionDetails, "Action / Improvement details", 250);
             string improvementCategory = RequireOneOf(item.improvementCategory, HdOptions.ImprovementCategories, "Improvement Category");
             string hdApplicablePlants = RequireMultiOf(item.hdApplicablePlants, HdOptions.Plants, "HD Applicable Plants");
             string responsiblePersons = RequireEmails(item.responsiblePersons, "Responsible persons for HD");
@@ -161,27 +161,27 @@ namespace QualityHD
                     cmd.Parameters.AddWithValue("@responsiblePersons", responsiblePersons);
 
                     cmd.Parameters.AddWithValue("@ngpStatus", ngpStatus);
-                    cmd.Parameters.AddWithValue("@ngpDetails", Optional(item.ngpHdDetails, 4000));
+                    cmd.Parameters.AddWithValue("@ngpDetails", Optional(item.ngpHdDetails, 250));
                     cmd.Parameters.AddWithValue("@ngpDate", OptionalDate(item.ngpTargetDate));
 
                     cmd.Parameters.AddWithValue("@zhbStatus", zhbStatus);
-                    cmd.Parameters.AddWithValue("@zhbDetails", Optional(item.zhbHdDetails, 4000));
+                    cmd.Parameters.AddWithValue("@zhbDetails", Optional(item.zhbHdDetails, 250));
                     cmd.Parameters.AddWithValue("@zhbDate", OptionalDate(item.zhbTargetDate));
 
                     cmd.Parameters.AddWithValue("@rdpStatus", rdpStatus);
-                    cmd.Parameters.AddWithValue("@rdpDetails", Optional(item.rdpHdDetails, 4000));
+                    cmd.Parameters.AddWithValue("@rdpDetails", Optional(item.rdpHdDetails, 250));
                     cmd.Parameters.AddWithValue("@rdpDate", OptionalDate(item.rdpTargetDate));
 
                     cmd.Parameters.AddWithValue("@jprStatus", jprStatus);
-                    cmd.Parameters.AddWithValue("@jprDetails", Optional(item.jprHdDetails, 4000));
+                    cmd.Parameters.AddWithValue("@jprDetails", Optional(item.jprHdDetails, 250));
                     cmd.Parameters.AddWithValue("@jprDate", OptionalDate(item.jprTargetDate));
 
                     cmd.Parameters.AddWithValue("@rjkStatus", rjkStatus);
-                    cmd.Parameters.AddWithValue("@rjkDetails", Optional(item.rjkHdDetails, 4000));
+                    cmd.Parameters.AddWithValue("@rjkDetails", Optional(item.rjkHdDetails, 250));
                     cmd.Parameters.AddWithValue("@rjkDate", OptionalDate(item.rjkTargetDate));
 
                     cmd.Parameters.AddWithValue("@kndStatus", kndStatus);
-                    cmd.Parameters.AddWithValue("@kndDetails", Optional(item.kndHdDetails, 4000));
+                    cmd.Parameters.AddWithValue("@kndDetails", Optional(item.kndHdDetails, 250));
                     cmd.Parameters.AddWithValue("@kndDate", OptionalDate(item.kndTargetDate));
 
                     cmd.Parameters.AddWithValue("@attachments", attachments);

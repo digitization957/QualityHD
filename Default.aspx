@@ -68,6 +68,13 @@
         .plant-block strong { font-family: var(--font-mono); font-size: .78rem; letter-spacing: .04em; color: var(--sage); }
         .required-mark { color: var(--clay); }
 
+        /* Fixed-height textareas: content scrolls inside instead of growing the box */
+        textarea.form-control { resize: none; overflow-y: auto; height: 5.2rem; }
+        textarea.plant-details { height: 3.4rem; }
+        .char-counter { display: block; text-align: right; font-size: .72rem; color: var(--ink-faint); margin-top: .2rem; }
+        .char-counter.warn { color: var(--amber); }
+        .char-counter.max { color: var(--clay); font-weight: 600; }
+
         .btn-primary { background: var(--sage); border-color: var(--sage); font-weight: 500; }
         .btn-primary:hover { filter: brightness(1.08); background: var(--sage); border-color: var(--sage); }
         .btn, .form-control, .form-select { border-radius: 8px; }
@@ -228,15 +235,18 @@
 
                             <div class="col-12">
                                 <label class="form-label">Description of reported issue or Improvement <span class="required-mark">*</span></label>
-                                <textarea class="form-control" id="description" rows="2" maxlength="4000" required></textarea>
+                                <textarea class="form-control char-limited" id="description" maxlength="250" required></textarea>
+                                <span class="char-counter" data-counter-for="description">0 / 250</span>
                             </div>
                             <div class="col-12">
                                 <label class="form-label">Analysis details <span class="required-mark">*</span></label>
-                                <textarea class="form-control" id="analysisDetails" rows="2" maxlength="4000" required></textarea>
+                                <textarea class="form-control char-limited" id="analysisDetails" maxlength="250" required></textarea>
+                                <span class="char-counter" data-counter-for="analysisDetails">0 / 250</span>
                             </div>
                             <div class="col-12">
                                 <label class="form-label">Action / Improvement details <span class="required-mark">*</span></label>
-                                <textarea class="form-control" id="actionDetails" rows="2" maxlength="4000" required></textarea>
+                                <textarea class="form-control char-limited" id="actionDetails" maxlength="250" required></textarea>
+                                <span class="char-counter" data-counter-for="actionDetails">0 / 250</span>
                                 <div class="form-text">Put complete details of Improvement along with Implementation date &amp; Images.</div>
                             </div>
 
@@ -285,7 +295,8 @@
                                         </div>
                                         <div class="col-12">
                                             <label class="form-label small mb-0">HD details</label>
-                                            <textarea class="form-control form-control-sm plant-details" rows="2"></textarea>
+                                            <textarea class="form-control form-control-sm plant-details char-limited" maxlength="250"></textarea>
+                                            <span class="char-counter">0 / 250</span>
                                         </div>
                                     </div>
                                 </div>
@@ -300,7 +311,7 @@
                                             </select>
                                         </div>
                                         <div class="col-4"><label class="form-label small mb-0">Target date</label><input type="date" class="form-control form-control-sm plant-date" /></div>
-                                        <div class="col-12"><label class="form-label small mb-0">HD details</label><textarea class="form-control form-control-sm plant-details" rows="2"></textarea></div>
+                                        <div class="col-12"><label class="form-label small mb-0">HD details</label><textarea class="form-control form-control-sm plant-details char-limited" maxlength="250"></textarea><span class="char-counter">0 / 250</span></div>
                                     </div>
                                 </div>
                             </div>
@@ -314,7 +325,7 @@
                                             </select>
                                         </div>
                                         <div class="col-4"><label class="form-label small mb-0">Target date</label><input type="date" class="form-control form-control-sm plant-date" /></div>
-                                        <div class="col-12"><label class="form-label small mb-0">HD details</label><textarea class="form-control form-control-sm plant-details" rows="2"></textarea></div>
+                                        <div class="col-12"><label class="form-label small mb-0">HD details</label><textarea class="form-control form-control-sm plant-details char-limited" maxlength="250"></textarea><span class="char-counter">0 / 250</span></div>
                                     </div>
                                 </div>
                             </div>
@@ -328,7 +339,7 @@
                                             </select>
                                         </div>
                                         <div class="col-4"><label class="form-label small mb-0">Target date</label><input type="date" class="form-control form-control-sm plant-date" /></div>
-                                        <div class="col-12"><label class="form-label small mb-0">HD details</label><textarea class="form-control form-control-sm plant-details" rows="2"></textarea></div>
+                                        <div class="col-12"><label class="form-label small mb-0">HD details</label><textarea class="form-control form-control-sm plant-details char-limited" maxlength="250"></textarea><span class="char-counter">0 / 250</span></div>
                                     </div>
                                 </div>
                             </div>
@@ -342,7 +353,7 @@
                                             </select>
                                         </div>
                                         <div class="col-4"><label class="form-label small mb-0">Target date</label><input type="date" class="form-control form-control-sm plant-date" /></div>
-                                        <div class="col-12"><label class="form-label small mb-0">HD details</label><textarea class="form-control form-control-sm plant-details" rows="2"></textarea></div>
+                                        <div class="col-12"><label class="form-label small mb-0">HD details</label><textarea class="form-control form-control-sm plant-details char-limited" maxlength="250"></textarea><span class="char-counter">0 / 250</span></div>
                                     </div>
                                 </div>
                             </div>
@@ -356,7 +367,7 @@
                                             </select>
                                         </div>
                                         <div class="col-4"><label class="form-label small mb-0">Target date</label><input type="date" class="form-control form-control-sm plant-date" /></div>
-                                        <div class="col-12"><label class="form-label small mb-0">HD details</label><textarea class="form-control form-control-sm plant-details" rows="2"></textarea></div>
+                                        <div class="col-12"><label class="form-label small mb-0">HD details</label><textarea class="form-control form-control-sm plant-details char-limited" maxlength="250"></textarea><span class="char-counter">0 / 250</span></div>
                                     </div>
                                 </div>
                             </div>

@@ -136,7 +136,22 @@ function resetForm() {
     $('#formError').addClass('d-none').text('');
     $('#attachmentList').empty();
     uploadedAttachments = [];
+    $('.char-limited').each(updateCharCounter);
 }
+
+// Live char counter for every fixed-height, 250-char-capped textarea.
+// Counter sits right after the textarea in the markup.
+function updateCharCounter() {
+    var $ta = $(this);
+    var max = parseInt($ta.attr('maxlength'), 10) || 250;
+    var len = $ta.val().length;
+    var $counter = $ta.next('.char-counter');
+    $counter.text(len + ' / ' + max);
+    $counter.toggleClass('max', len >= max);
+    $counter.toggleClass('warn', len < max && len >= max - 20);
+}
+
+$(document).on('input', '.char-limited', updateCharCounter);
 
 $('#btnAddNew').on('click', function () {
     resetForm();

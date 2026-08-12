@@ -18,7 +18,7 @@ $(function () {
         $.ajax({
             type: 'POST',
             url: 'Login.aspx/GenerateToken',
-            data: JSON.stringify({ token: $('#txtToken').val(), role: $('#ddlRole').val(), plant: $('#ddlPlant').val() }),
+            data: JSON.stringify({ token: $('#txtToken').val(), plant: $('#ddlPlant').val() }),
             contentType: 'application/json; charset=utf-8',
             dataType: 'json'
         }).done(function (response) {

@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>QualityHD - HD Improvement Log</title>
+    <title>QualityHD - HD FD Tracker</title>
     <link href="Content/bootstrap.min.css" rel="stylesheet" />
     <style>
         :root {
@@ -86,7 +86,7 @@
 <body>
     <nav class="navbar mb-4">
         <div class="container-fluid">
-            <span class="navbar-brand"><span class="brand-mark">HD</span> QualityHD &mdash; HD Improvement Log</span>
+            <span class="navbar-brand"><span class="brand-mark">HD</span> QualityHD &mdash; HD FD Tracker</span>
             <span class="d-flex align-items-center">
                 <span class="role-chip me-3" id="roleBadge">Role</span>
                 <button type="button" id="btnLogout" class="btn btn-outline-secondary btn-sm">Logout</button>

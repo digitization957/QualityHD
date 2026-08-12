@@ -49,7 +49,7 @@
         .stat-tile__value.c-good { color: var(--moss); }
 
         .table-responsive { background: var(--surface); border-radius: 14px; border: 1px solid var(--line); max-height: calc(100vh - 260px); min-height: 220px; overflow-y: auto; }
-        .table-light th { position: sticky; top: 0; z-index: 2; font-size: 0.68rem; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink-faint); font-weight: 600; background: var(--paper); border-bottom: 1px solid var(--line); }
+        .table-light th { position: sticky; top: 0; z-index: 2; font-size: 0.68rem; letter-spacing: 0.07em; text-transform: uppercase; color: #000; font-weight: 700; background: var(--paper); border-bottom: 1px solid var(--line); }
         .table > :not(caption) > * > * { padding: .6rem .85rem; }
         .table-hover > tbody > tr:hover > * { background-color: var(--sage-tint); }
         .mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; color: var(--ink-soft); }
@@ -71,12 +71,21 @@
         .user-menu { position: relative; }
         .user-icon-btn { width: 36px; height: 36px; border-radius: 50%; background: var(--sage-tint); color: var(--sage); border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: 700; font-family: var(--font-display); font-size: .82rem; transition: filter 140ms ease; }
         .user-icon-btn:hover { filter: brightness(0.95); }
-        .user-popover { position: absolute; top: calc(100% + 10px); right: 0; width: 260px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 20px 50px -20px rgba(42,46,41,.28); padding: 1rem; opacity: 0; transform: translateY(-6px) scale(.98); pointer-events: none; transition: opacity 160ms ease, transform 160ms ease; z-index: 80; }
+        .user-popover { position: absolute; top: calc(100% + 10px); right: 0; width: 270px; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; box-shadow: 0 24px 60px -20px rgba(42,46,41,.3); padding: .85rem; opacity: 0; transform: translateY(-6px) scale(.98); pointer-events: none; transition: opacity 160ms ease, transform 160ms ease; z-index: 80; }
         .user-popover.show { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
-        .user-popover__row { display: flex; justify-content: space-between; align-items: center; padding: .5rem 0; border-bottom: 1px solid var(--line); }
-        .user-popover__row:last-of-type { border-bottom: none; margin-bottom: .5rem; }
+
+        .user-popover__header { display: flex; align-items: center; gap: .7rem; padding: .3rem .35rem .7rem; }
+        .user-popover__avatar { width: 42px; height: 42px; flex: none; border-radius: 12px; background: var(--sage); color: #fff; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 700; font-size: .95rem; }
+        .user-popover__identity { min-width: 0; }
+        .user-popover__plant { font-family: var(--font-display); font-weight: 700; font-size: .98rem; color: var(--ink); letter-spacing: -0.01em; }
+        .user-popover__role { font-size: .74rem; color: var(--ink-soft); margin-top: .1rem; }
+        .user-popover__divider { height: 1px; background: var(--line); margin: 0 -.85rem; }
+
+        .user-popover__row { display: flex; justify-content: space-between; align-items: center; gap: .75rem; padding: .7rem .35rem; }
         .user-popover__label { color: var(--ink-faint); font-size: .68rem; text-transform: uppercase; letter-spacing: .05em; font-weight: 600; }
-        .user-popover__value { font-weight: 600; color: var(--ink); font-family: var(--font-mono); font-size: .78rem; }
+        .user-popover__value { font-weight: 600; color: var(--ink-soft); font-family: var(--font-mono); font-size: .76rem; }
+        .user-popover__logout { display: flex; align-items: center; justify-content: center; gap: .45rem; width: 100%; margin-top: .3rem; padding: .55rem; border-radius: 10px; border: 1px solid var(--clay-tint); background: var(--clay-tint); color: var(--clay); font-weight: 600; font-size: .85rem; cursor: pointer; transition: filter 140ms ease; }
+        .user-popover__logout:hover { filter: brightness(0.97); }
 
         /* View item modal */
         .view-meta { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; margin-bottom: 1.1rem; }
@@ -131,10 +140,22 @@
             <span class="user-menu">
                 <button type="button" class="user-icon-btn" id="btnUserMenu" aria-haspopup="true" aria-expanded="false" title="Account">U</button>
                 <div class="user-popover" id="userPopover">
-                    <div class="user-popover__row"><span class="user-popover__label">Token</span><span class="user-popover__value" id="popoverToken">&mdash;</span></div>
-                    <div class="user-popover__row"><span class="user-popover__label">Role</span><span class="user-popover__value" id="popoverRole">&mdash;</span></div>
-                    <div class="user-popover__row"><span class="user-popover__label">Plant</span><span class="user-popover__value" id="popoverPlant">&mdash;</span></div>
-                    <button type="button" id="btnLogout" class="btn btn-outline-secondary btn-sm w-100">Logout</button>
+                    <div class="user-popover__header">
+                        <span class="user-popover__avatar" id="popoverAvatar">U</span>
+                        <div class="user-popover__identity">
+                            <div class="user-popover__plant" id="popoverPlant">&mdash;</div>
+                            <div class="user-popover__role" id="popoverRole">&mdash;</div>
+                        </div>
+                    </div>
+                    <div class="user-popover__divider"></div>
+                    <div class="user-popover__row">
+                        <span class="user-popover__label">Session token</span>
+                        <span class="user-popover__value" id="popoverToken">&mdash;</span>
+                    </div>
+                    <button type="button" id="btnLogout" class="user-popover__logout">
+                        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 2H3.5A1.5 1.5 0 0 0 2 3.5v9A1.5 1.5 0 0 0 3.5 14H6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M10.5 11 14 8l-3.5-3M14 8H6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        Log out
+                    </button>
                 </div>
             </span>
         </div>

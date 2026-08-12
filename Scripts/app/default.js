@@ -9,10 +9,12 @@ if (!jwt) {
 // User menu popover: shows the signed-in token/role/plant, toggled off the
 // avatar button instead of always-visible chips.
 var jwtSubject = (jwt || '').split('.')[0] || '';
+var plantInitials = (plant || 'U').slice(0, 2).toUpperCase();
 $('#popoverToken').text(jwtSubject ? jwtSubject.slice(0, 10) + '…' : '—');
-$('#popoverRole').text(role || 'User');
-$('#popoverPlant').text(plant || '—');
-$('#btnUserMenu').text((plant || 'U').slice(0, 2).toUpperCase());
+$('#popoverRole').text((role || 'User') + ' role');
+$('#popoverPlant').text(plant ? plant + ' Plant' : '—');
+$('#popoverAvatar').text(plantInitials);
+$('#btnUserMenu').text(plantInitials);
 
 $('#btnUserMenu').on('click', function (e) {
     e.stopPropagation();

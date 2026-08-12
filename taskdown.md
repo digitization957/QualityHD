@@ -18,3 +18,5 @@
 - All/Own/Assigned filter now has a smooth sliding highlight (segmented-control style) instead of an instant swap; item list fades briefly on scope/reload.
 - Replaced the always-visible Role/Plant chips + Logout button with a single user icon in the navbar; clicking it opens a popover showing Token, Role, Plant, and Logout.
 - Optimized layout for 720p displays: tighter navbar/stats/toolbar spacing, sticky table header with the item list scrolling in its own max-height panel (instead of the whole page), Add Item modal now uses modal-dialog-scrollable (pinned header/footer, only body scrolls), shorter fixed-height textareas.
+- Redesigned the user icon popover: avatar + plant name + role header, divider, token row, and a distinct clay-toned "Log out" button with icon (was a flat list of chips before).
+- Improvement Items table header is now bold and black (was uppercase grey).

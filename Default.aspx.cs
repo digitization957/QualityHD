@@ -93,6 +93,59 @@ namespace QualityHD
 
         [WebMethod(EnableSession = false)]
         [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
+        public static object GetItemDetails(int id)
+        {
+            AuthHelper.RequireRole();
+
+            using (var conn = DbHelper.GetConnection())
+            {
+                conn.Open();
+                using (var cmd = new MySqlCommand(@"SELECT * FROM hd_items WHERE id = @id LIMIT 1", conn))
+                {
+                    cmd.Parameters.AddWithValue("@id", id);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (!reader.Read()) throw new InvalidOperationException("Item not found.");
+
+                        Func<string, string> s = col => reader.IsDBNull(reader.GetOrdinal(col)) ? null : reader.GetString(reader.GetOrdinal(col));
+                        Func<string, object> d = col => reader.IsDBNull(reader.GetOrdinal(col)) ? null : (object)reader.GetDateTime(reader.GetOrdinal(col)).ToString("yyyy-MM-dd");
+
+                        return new
+                        {
+                            id = reader.GetInt32(reader.GetOrdinal("id")),
+                            hdTheme = s("hd_theme"),
+                            improvementType = s("improvement_type"),
+                            hdSourcePlant = s("hd_source_plant"),
+                            aggregateType = s("aggregate_type"),
+                            description = s("description"),
+                            modelFamily = s("model_family"),
+                            issueSource = s("issue_source"),
+                            casesCount = reader.GetInt32(reader.GetOrdinal("cases_count")),
+                            analysisDetails = s("analysis_details"),
+                            actionDetails = s("action_details"),
+                            improvementCategory = s("improvement_category"),
+                            hdApplicablePlants = s("hd_applicable_plants"),
+                            responsiblePersons = s("responsible_persons"),
+                            attachments = s("attachments"),
+                            createdByRole = s("created_by_role"),
+                            createdAt = reader.GetDateTime(reader.GetOrdinal("created_at")).ToString("yyyy-MM-dd HH:mm"),
+                            plants = new object[]
+                            {
+                                new { plant = "NGP", status = s("ngp_orc_status"), details = s("ngp_hd_details"), targetDate = d("ngp_target_date") },
+                                new { plant = "ZHB", status = s("zhb_orc_status"), details = s("zhb_hd_details"), targetDate = d("zhb_target_date") },
+                                new { plant = "RDP", status = s("rdp_orc_status"), details = s("rdp_hd_details"), targetDate = d("rdp_target_date") },
+                                new { plant = "JPR", status = s("jpr_orc_status"), details = s("jpr_hd_details"), targetDate = d("jpr_target_date") },
+                                new { plant = "RJK", status = s("rjk_orc_status"), details = s("rjk_hd_details"), targetDate = d("rjk_target_date") },
+                                new { plant = "KND", status = s("knd_orc_status"), details = s("knd_hd_details"), targetDate = d("knd_target_date") }
+                            }
+                        };
+                    }
+                }
+            }
+        }
+
+        [WebMethod(EnableSession = false)]
+        [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
         public static object SaveItem(HdItemInput item)
         {
             string role = AuthHelper.RequireRole();

@@ -58,10 +58,39 @@
         .pill-type-reactive { background: var(--amber-tint); color: var(--amber); }
         .pill-type-proactive { background: var(--moss-tint); color: var(--moss); }
 
-        .scope-group { display: inline-flex; background: var(--paper); border: 1px solid var(--line); border-radius: 100px; padding: .2rem; gap: .15rem; }
-        .scope-pill { border: none; background: transparent; color: var(--ink-soft); font-size: .78rem; font-weight: 500; padding: .3rem .8rem; border-radius: 100px; cursor: pointer; }
+        .scope-group { position: relative; display: inline-flex; background: var(--paper); border: 1px solid var(--line); border-radius: 100px; padding: .2rem; gap: .15rem; }
+        .scope-thumb { position: absolute; top: .2rem; bottom: .2rem; left: 0; border-radius: 100px; background: var(--surface); box-shadow: 0 1px 2px rgba(28,35,32,.08); transition: left 220ms cubic-bezier(.4,0,.2,1), width 220ms cubic-bezier(.4,0,.2,1); z-index: 0; }
+        .scope-pill { position: relative; z-index: 1; border: none; background: transparent; color: var(--ink-soft); font-size: .78rem; font-weight: 500; padding: .3rem .8rem; border-radius: 100px; cursor: pointer; transition: color 160ms ease; }
         .scope-pill:hover { color: var(--ink); }
-        .scope-pill.active { background: var(--surface); color: var(--sage); font-weight: 600; box-shadow: 0 1px 2px rgba(28,35,32,.08); }
+        .scope-pill.active { color: var(--sage); font-weight: 600; }
+
+        tbody tr.row-clickable { cursor: pointer; }
+        tbody tr.row-fade { transition: opacity 160ms ease; }
+
+        /* User menu */
+        .user-menu { position: relative; }
+        .user-icon-btn { width: 36px; height: 36px; border-radius: 50%; background: var(--sage-tint); color: var(--sage); border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: 700; font-family: var(--font-display); font-size: .82rem; transition: filter 140ms ease; }
+        .user-icon-btn:hover { filter: brightness(0.95); }
+        .user-popover { position: absolute; top: calc(100% + 10px); right: 0; width: 260px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 20px 50px -20px rgba(42,46,41,.28); padding: 1rem; opacity: 0; transform: translateY(-6px) scale(.98); pointer-events: none; transition: opacity 160ms ease, transform 160ms ease; z-index: 80; }
+        .user-popover.show { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+        .user-popover__row { display: flex; justify-content: space-between; align-items: center; padding: .5rem 0; border-bottom: 1px solid var(--line); }
+        .user-popover__row:last-of-type { border-bottom: none; margin-bottom: .5rem; }
+        .user-popover__label { color: var(--ink-faint); font-size: .68rem; text-transform: uppercase; letter-spacing: .05em; font-weight: 600; }
+        .user-popover__value { font-weight: 600; color: var(--ink); font-family: var(--font-mono); font-size: .78rem; }
+
+        /* View item modal */
+        .view-meta { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; margin-bottom: 1.1rem; }
+        .view-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: .9rem; margin-bottom: 1.1rem; }
+        @media (max-width: 700px) { .view-grid { grid-template-columns: repeat(2, 1fr); } }
+        .view-field__label { font-size: .68rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: .25rem; }
+        .view-field__value { font-size: .88rem; color: var(--ink); }
+        .view-block { margin-bottom: 1.1rem; }
+        .view-block__label { font-size: .74rem; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-soft); margin-bottom: .35rem; border-bottom: 1px solid var(--line); padding-bottom: .35rem; }
+        .view-block__text { font-size: .86rem; color: var(--ink); white-space: pre-wrap; line-height: 1.5; }
+        .view-orc-table { width: 100%; border-collapse: collapse; font-size: .82rem; }
+        .view-orc-table th { text-align: left; font-size: .66rem; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-faint); border-bottom: 1px solid var(--line); padding: .5rem .6rem; }
+        .view-orc-table td { padding: .5rem .6rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+        .view-orc-table tr:last-child td { border-bottom: none; }
 
         .section-title { font-weight: 600; font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; margin-top: 1.75rem; margin-bottom: .85rem; padding-bottom: .5rem; border-bottom: 1px solid var(--line); color: var(--ink-soft); }
         .plant-block { background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: .85rem; margin-bottom: .75rem; }
@@ -99,10 +128,14 @@
     <nav class="navbar mb-4">
         <div class="container-fluid">
             <span class="navbar-brand"><span class="brand-mark">HD</span> QualityHD &mdash; HD FD Tracker</span>
-            <span class="d-flex align-items-center">
-                <span class="role-chip me-2" id="roleBadge">Role</span>
-                <span class="role-chip me-3" id="plantBadge">Plant</span>
-                <button type="button" id="btnLogout" class="btn btn-outline-secondary btn-sm">Logout</button>
+            <span class="user-menu">
+                <button type="button" class="user-icon-btn" id="btnUserMenu" aria-haspopup="true" aria-expanded="false" title="Account">U</button>
+                <div class="user-popover" id="userPopover">
+                    <div class="user-popover__row"><span class="user-popover__label">Token</span><span class="user-popover__value" id="popoverToken">&mdash;</span></div>
+                    <div class="user-popover__row"><span class="user-popover__label">Role</span><span class="user-popover__value" id="popoverRole">&mdash;</span></div>
+                    <div class="user-popover__row"><span class="user-popover__label">Plant</span><span class="user-popover__value" id="popoverPlant">&mdash;</span></div>
+                    <button type="button" id="btnLogout" class="btn btn-outline-secondary btn-sm w-100">Logout</button>
+                </div>
             </span>
         </div>
     </nav>
@@ -118,7 +151,8 @@
         <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
             <div class="d-flex align-items-center gap-2 flex-wrap">
                 <h5 class="mb-0 me-2">Improvement Items</h5>
-                <div class="scope-group" role="group" aria-label="Filter by plant">
+                <div class="scope-group" role="group" aria-label="Filter by plant" id="scopeGroup">
+                    <span class="scope-thumb" id="scopeThumb"></span>
                     <button type="button" class="scope-pill active" data-scope="all">All</button>
                     <button type="button" class="scope-pill" data-scope="own">Own</button>
                     <button type="button" class="scope-pill" data-scope="assigned">Assigned</button>
@@ -377,6 +411,20 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button type="button" id="btnSaveItem" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Item Details Modal -->
+    <div class="modal fade" id="viewItemModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="viewTitle">HD Improvement Item</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="viewBody">
                 </div>
             </div>
         </div>

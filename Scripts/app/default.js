@@ -6,8 +6,25 @@ if (!jwt) {
     window.location.href = 'Login.aspx';
 }
 
-$('#roleBadge').text(role || 'User');
-$('#plantBadge').text(plant || '');
+// User menu popover: shows the signed-in token/role/plant, toggled off the
+// avatar button instead of always-visible chips.
+var jwtSubject = (jwt || '').split('.')[0] || '';
+$('#popoverToken').text(jwtSubject ? jwtSubject.slice(0, 10) + '…' : '—');
+$('#popoverRole').text(role || 'User');
+$('#popoverPlant').text(plant || '—');
+$('#btnUserMenu').text((plant || 'U').slice(0, 2).toUpperCase());
+
+$('#btnUserMenu').on('click', function (e) {
+    e.stopPropagation();
+    var showing = $('#userPopover').toggleClass('show').hasClass('show');
+    $(this).attr('aria-expanded', showing);
+});
+$(document).on('click', function (e) {
+    if (!$(e.target).closest('.user-menu').length) {
+        $('#userPopover').removeClass('show');
+        $('#btnUserMenu').attr('aria-expanded', false);
+    }
+});
 
 $('#btnLogout').on('click', function () {
     sessionStorage.removeItem('qhd_jwt');
@@ -44,12 +61,21 @@ var allItems = [];
 var searchTerm = '';
 var scope = 'all';
 
+function moveScopeThumb() {
+    var $active = $('.scope-pill.active');
+    var $thumb = $('#scopeThumb');
+    if (!$active.length || !$thumb.length) return;
+    $thumb.css({ width: $active.outerWidth() + 'px', left: $active[0].offsetLeft + 'px' });
+}
+
 $('.scope-pill').on('click', function () {
     scope = $(this).data('scope');
     $('.scope-pill').removeClass('active');
     $(this).addClass('active');
+    moveScopeThumb();
     loadItems();
 });
+$(window).on('resize', moveScopeThumb);
 
 function renderStats(items) {
     $('#statTotal').text(items.length);
@@ -80,7 +106,7 @@ function renderItems(highlightId) {
     $('#emptyState').addClass('d-none');
 
     $.each(filtered, function (i, item) {
-        var $row = $('<tr>');
+        var $row = $('<tr>').addClass('row-clickable').attr('data-id', item.id);
         if (highlightId && item.id === highlightId) { $row.addClass('row-enter'); }
 
         var typePillClass = item.improvementType === 'Reactive' ? 'pill-type-reactive' : 'pill-type-proactive';
@@ -110,7 +136,86 @@ $('#searchInput').on('input', function () {
     renderItems();
 });
 
+// Row click -> full read-only detail view in a modal.
+$('#itemsBody').on('click', 'tr', function () {
+    var id = $(this).data('id');
+    openViewModal(id);
+});
+
+function fieldBlock(label, value) {
+    return '<div><div class="view-field__label">' + escapeHtml(label) + '</div><div class="view-field__value">' + escapeHtml(value || '—') + '</div></div>';
+}
+
+function textBlock(label, value) {
+    return '<div class="view-block"><div class="view-block__label">' + escapeHtml(label) + '</div><div class="view-block__text">' + escapeHtml(value || '—') + '</div></div>';
+}
+
+function openViewModal(id) {
+    $('#viewTitle').text('Loading…');
+    $('#viewBody').html('<div class="text-center text-muted py-4">Loading item…</div>');
+    new bootstrap.Modal(document.getElementById('viewItemModal')).show();
+
+    authAjax({
+        type: 'POST',
+        url: 'Default.aspx/GetItemDetails',
+        data: JSON.stringify({ id: id }),
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json'
+    }).done(function (response) {
+        renderViewModal(response.d);
+    }).fail(function (xhr) {
+        var msg = 'Could not load item details.';
+        try { msg = JSON.parse(xhr.responseText).Message || msg; } catch (e) { }
+        $('#viewBody').html('<div class="alert alert-danger">' + escapeHtml(msg) + '</div>');
+    });
+}
+
+function renderViewModal(item) {
+    $('#viewTitle').text('#' + item.id + ' — ' + item.hdTheme);
+
+    var typePillClass = item.improvementType === 'Reactive' ? 'pill-type-reactive' : 'pill-type-proactive';
+    var meta =
+        '<div class="view-meta">' +
+        '<span class="pill-type ' + typePillClass + '">' + escapeHtml(item.improvementType) + '</span>' +
+        '<span class="pill-plant">Source: ' + escapeHtml(item.hdSourcePlant) + '</span>' +
+        '<span class="text-muted small ms-auto">Logged by ' + escapeHtml(item.createdByRole) + ' &middot; ' + escapeHtml(item.createdAt) + '</span>' +
+        '</div>';
+
+    var grid =
+        '<div class="view-grid">' +
+        fieldBlock('Aggregate', item.aggregateType) +
+        fieldBlock('Model Family', item.modelFamily) +
+        fieldBlock('Issue Source', item.issueSource) +
+        fieldBlock('Cases', item.casesCount) +
+        fieldBlock('Category', item.improvementCategory) +
+        fieldBlock('Applicable Plants', item.hdApplicablePlants) +
+        '</div>';
+
+    var body =
+        meta + grid +
+        textBlock('Description', item.description) +
+        textBlock('Analysis details', item.analysisDetails) +
+        textBlock('Action / Improvement details', item.actionDetails) +
+        textBlock('Responsible persons', item.responsiblePersons) +
+        textBlock('Attachments', item.attachments);
+
+    var rows = '';
+    $.each(item.plants, function (i, p) {
+        rows += '<tr><td class="mono">' + escapeHtml(p.plant) + '</td>' +
+            '<td>' + escapeHtml(p.status || '—') + '</td>' +
+            '<td class="mono">' + escapeHtml(p.targetDate || '—') + '</td>' +
+            '<td>' + escapeHtml(p.details || '—') + '</td></tr>';
+    });
+
+    body += '<div class="view-block"><div class="view-block__label">Plant-wise ORC Tracking</div>' +
+        '<table class="view-orc-table"><thead><tr><th>Plant</th><th>Status</th><th>Target date</th><th>Details</th></tr></thead>' +
+        '<tbody>' + rows + '</tbody></table></div>';
+
+    $('#viewBody').html(body);
+}
+
 function loadItems(highlightId) {
+    var $body = $('#itemsBody').css('transition', 'opacity 140ms ease').css('opacity', 0.35);
     authAjax({
         type: 'POST',
         url: 'Default.aspx/GetItems',
@@ -125,6 +230,8 @@ function loadItems(highlightId) {
         if (xhr.status !== 401) {
             $('#loadError').removeClass('d-none').text('Could not load items. Please refresh.');
         }
+    }).always(function () {
+        $body.css('opacity', 1);
     });
 }
 
@@ -267,4 +374,5 @@ $('#btnSaveItem').on('click', function () {
     });
 });
 
+moveScopeThumb();
 loadItems();

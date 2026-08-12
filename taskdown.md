@@ -14,3 +14,6 @@
 - Navbar now shows the logged-in plant next to the role chip.
 - Removed Admin role — app only has one role (User) for now; dropped the Role dropdown from Login.aspx and simplified GenerateToken to always issue "User".
 - Modal textareas (Description, Analysis details, Action details, per-plant HD details) are now fixed-height with internal scroll instead of growing, capped at 250 chars, with a live "x / 250" counter (amber near limit, red at limit). Backend validation limits updated to match (250, was 4000).
+- Row click on the item list now opens a read-only detail modal (GetItemDetails WebMethod) showing full core fields, description/analysis/action text, responsible persons, attachments, and a plant-wise ORC tracking table for all 6 plants.
+- All/Own/Assigned filter now has a smooth sliding highlight (segmented-control style) instead of an instant swap; item list fades briefly on scope/reload.
+- Replaced the always-visible Role/Plant chips + Logout button with a single user icon in the navbar; clicking it opens a popover showing Token, Role, Plant, and Logout.

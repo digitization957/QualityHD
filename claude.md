@@ -34,3 +34,9 @@ add a line bullet of what task u did in taskdown.md
  - never use asp controller
  - always comments on logic
  - always take approach which are VAPT compliant
+
+ DB LOGIC NOTE (hd_items table):
+ - 1 item = 1 row only, never multiple rows for multiple plants
+ - hd_source_plant = plant that logged it
+ - hd_applicable_plants = comma list of plants it affects (B,C etc)
+ - every row already has status/details/date columns for all 6 plants, so each affected plant updates its own columns on that same row

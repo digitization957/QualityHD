@@ -1,15 +1,18 @@
 var jwt = sessionStorage.getItem('qhd_jwt');
 var role = sessionStorage.getItem('qhd_role');
+var plant = sessionStorage.getItem('qhd_plant');
 
 if (!jwt) {
     window.location.href = 'Login.aspx';
 }
 
 $('#roleBadge').text(role || 'User');
+$('#plantBadge').text(plant || '');
 
 $('#btnLogout').on('click', function () {
     sessionStorage.removeItem('qhd_jwt');
     sessionStorage.removeItem('qhd_role');
+    sessionStorage.removeItem('qhd_plant');
     window.location.href = 'Login.aspx';
 });
 
@@ -39,6 +42,14 @@ function showToast(text) {
 
 var allItems = [];
 var searchTerm = '';
+var scope = 'all';
+
+$('.scope-pill').on('click', function () {
+    scope = $(this).data('scope');
+    $('.scope-pill').removeClass('active');
+    $(this).addClass('active');
+    loadItems();
+});
 
 function renderStats(items) {
     $('#statTotal').text(items.length);
@@ -62,7 +73,7 @@ function renderItems(highlightId) {
 
     if (filtered.length === 0) {
         $('#emptyState').removeClass('d-none').text(
-            allItems.length === 0 ? 'No improvement items logged yet.' : 'No items match your search.'
+            allItems.length === 0 ? 'No items in this view.' : 'No items match your search.'
         );
         return;
     }
@@ -103,7 +114,7 @@ function loadItems(highlightId) {
     authAjax({
         type: 'POST',
         url: 'Default.aspx/GetItems',
-        data: '{}',
+        data: JSON.stringify({ scope: scope }),
         contentType: 'application/json; charset=utf-8',
         dataType: 'json'
     }).done(function (response) {

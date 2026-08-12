@@ -18,13 +18,14 @@ $(function () {
         $.ajax({
             type: 'POST',
             url: 'Login.aspx/GenerateToken',
-            data: JSON.stringify({ token: $('#txtToken').val(), role: $('#ddlRole').val() }),
+            data: JSON.stringify({ token: $('#txtToken').val(), role: $('#ddlRole').val(), plant: $('#ddlPlant').val() }),
             contentType: 'application/json; charset=utf-8',
             dataType: 'json'
         }).done(function (response) {
             var result = response.d;
             sessionStorage.setItem('qhd_jwt', result.jwt);
             sessionStorage.setItem('qhd_role', result.role);
+            sessionStorage.setItem('qhd_plant', result.plant);
             window.location.href = 'Default.aspx';
         }).fail(function (xhr) {
             var msg = 'Unable to sign in. Please try again.';

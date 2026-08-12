@@ -57,12 +57,25 @@
                 <input type="text" id="txtToken" class="form-control" readonly />
             </div>
 
-            <div class="mb-4">
+            <div class="mb-3">
                 <label for="ddlRole" class="form-label">Role</label>
                 <select id="ddlRole" class="form-select">
                     <option value="User" selected="selected">User</option>
                     <option value="Admin">Admin</option>
                 </select>
+            </div>
+
+            <div class="mb-4">
+                <label for="ddlPlant" class="form-label">Plant</label>
+                <select id="ddlPlant" class="form-select">
+                    <option value="NGP" selected="selected">NGP</option>
+                    <option value="ZHB">ZHB</option>
+                    <option value="RDP">RDP</option>
+                    <option value="JPR">JPR</option>
+                    <option value="RJK">RJK</option>
+                    <option value="KND">KND</option>
+                </select>
+                <div class="form-text">Stands in for the plant the real launcher resolves from your token.</div>
             </div>
 
             <div id="loginError" class="alert alert-danger d-none small"></div>

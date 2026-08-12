@@ -18,11 +18,24 @@ namespace QualityHD
 
         private static readonly Regex EmailPattern = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
 
+        // scope: "own" = items this plant logged, "assigned" = items logged
+        // elsewhere but applicable to this plant, anything else/null = all items.
         [WebMethod(EnableSession = false)]
         [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
-        public static object GetItems()
+        public static object GetItems(string scope)
         {
-            AuthHelper.RequireRole();
+            string role, plant;
+            AuthHelper.RequireAuth(out role, out plant);
+
+            string where = "";
+            if (scope == "own")
+            {
+                where = " WHERE hd_source_plant = @plant";
+            }
+            else if (scope == "assigned")
+            {
+                where = " WHERE hd_source_plant <> @plant AND FIND_IN_SET(@plant, hd_applicable_plants) > 0";
+            }
 
             var items = new List<object>();
             using (var conn = DbHelper.GetConnection())
@@ -32,9 +45,13 @@ namespace QualityHD
                     @"SELECT id, hd_theme, improvement_type, hd_source_plant, aggregate_type, description,
                              model_family, issue_source, cases_count, improvement_category, hd_applicable_plants,
                              created_by_role, created_at
-                      FROM hd_items ORDER BY id DESC", conn))
-                using (var reader = cmd.ExecuteReader())
+                      FROM hd_items" + where + " ORDER BY id DESC", conn))
                 {
+                    if ((scope == "own" || scope == "assigned") && !string.IsNullOrWhiteSpace(plant))
+                        cmd.Parameters.AddWithValue("@plant", plant);
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
                     int idxId = reader.GetOrdinal("id");
                     int idxTheme = reader.GetOrdinal("hd_theme");
                     int idxType = reader.GetOrdinal("improvement_type");
@@ -68,6 +85,7 @@ namespace QualityHD
                             createdAt = reader.GetDateTime(idxCreatedAt).ToString("yyyy-MM-dd HH:mm")
                         });
                     }
+                }
                 }
             }
             return items;

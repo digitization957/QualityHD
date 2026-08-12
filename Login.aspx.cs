@@ -15,9 +15,13 @@ namespace QualityHD
         {
         }
 
+        // In production the real launcher hands off token+role, and this app
+        // resolves the plant itself via PlantHelper (access.login_tokenpass ->
+        // plant_master.tbl_Plant). Those DBs aren't reachable in dev, so this
+        // simulated launcher lets the plant be picked manually instead.
         [WebMethod(EnableSession = false)]
         [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
-        public static object GenerateToken(string token, string role)
+        public static object GenerateToken(string token, string role, string plant)
         {
             if (string.IsNullOrWhiteSpace(token) || !TokenPattern.IsMatch(token))
                 throw new InvalidOperationException("Invalid token format.");
@@ -25,8 +29,11 @@ namespace QualityHD
             if (string.IsNullOrWhiteSpace(role) || Array.IndexOf(AllowedRoles, role) < 0)
                 throw new InvalidOperationException("Invalid role.");
 
-            string jwt = JwtHelper.Issue(token, role);
-            return new { jwt = jwt, role = role };
+            if (string.IsNullOrWhiteSpace(plant) || Array.IndexOf(HdOptions.Plants, plant) < 0)
+                throw new InvalidOperationException("Invalid plant.");
+
+            string jwt = JwtHelper.Issue(token, role, plant);
+            return new { jwt = jwt, role = role, plant = plant };
         }
     }
 }

@@ -58,6 +58,11 @@
         .pill-type-reactive { background: var(--amber-tint); color: var(--amber); }
         .pill-type-proactive { background: var(--moss-tint); color: var(--moss); }
 
+        .scope-group { display: inline-flex; background: var(--paper); border: 1px solid var(--line); border-radius: 100px; padding: .2rem; gap: .15rem; }
+        .scope-pill { border: none; background: transparent; color: var(--ink-soft); font-size: .78rem; font-weight: 500; padding: .3rem .8rem; border-radius: 100px; cursor: pointer; }
+        .scope-pill:hover { color: var(--ink); }
+        .scope-pill.active { background: var(--surface); color: var(--sage); font-weight: 600; box-shadow: 0 1px 2px rgba(28,35,32,.08); }
+
         .section-title { font-weight: 600; font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; margin-top: 1.75rem; margin-bottom: .85rem; padding-bottom: .5rem; border-bottom: 1px solid var(--line); color: var(--ink-soft); }
         .plant-block { background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: .85rem; margin-bottom: .75rem; }
         .plant-block strong { font-family: var(--font-mono); font-size: .78rem; letter-spacing: .04em; color: var(--sage); }
@@ -88,7 +93,8 @@
         <div class="container-fluid">
             <span class="navbar-brand"><span class="brand-mark">HD</span> QualityHD &mdash; HD FD Tracker</span>
             <span class="d-flex align-items-center">
-                <span class="role-chip me-3" id="roleBadge">Role</span>
+                <span class="role-chip me-2" id="roleBadge">Role</span>
+                <span class="role-chip me-3" id="plantBadge">Plant</span>
                 <button type="button" id="btnLogout" class="btn btn-outline-secondary btn-sm">Logout</button>
             </span>
         </div>
@@ -103,7 +109,14 @@
         </div>
 
         <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-            <h5 class="mb-0">Improvement Items</h5>
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <h5 class="mb-0 me-2">Improvement Items</h5>
+                <div class="scope-group" role="group" aria-label="Filter by plant">
+                    <button type="button" class="scope-pill active" data-scope="all">All</button>
+                    <button type="button" class="scope-pill" data-scope="own">Own</button>
+                    <button type="button" class="scope-pill" data-scope="assigned">Assigned</button>
+                </div>
+            </div>
             <div class="d-flex align-items-center gap-2">
                 <input type="text" id="searchInput" class="form-control form-control-sm" style="width:220px;" placeholder="Search theme or plant…" />
                 <button type="button" id="btnAddNew" class="btn btn-primary">+ Add New Item</button>

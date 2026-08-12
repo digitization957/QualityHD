@@ -30,7 +30,7 @@ namespace QualityHD.Helpers
             }
         }
 
-        public static string Issue(string subjectToken, string role)
+        public static string Issue(string subjectToken, string role, string plant)
         {
             var header = new Dictionary<string, object> { { "alg", "HS256" }, { "typ", "JWT" } };
             long now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
@@ -38,6 +38,7 @@ namespace QualityHD.Helpers
             {
                 { "sub", subjectToken },
                 { "role", role },
+                { "plant", plant },
                 { "iss", Issuer },
                 { "iat", now },
                 { "exp", now + (ExpiryMinutes * 60) }
@@ -51,9 +52,10 @@ namespace QualityHD.Helpers
             return unsigned + "." + signature;
         }
 
-        public static bool TryValidate(string token, out string role)
+        public static bool TryValidate(string token, out string role, out string plant)
         {
             role = null;
+            plant = null;
             if (string.IsNullOrWhiteSpace(token)) return false;
 
             string[] parts = token.Split('.');
@@ -81,6 +83,7 @@ namespace QualityHD.Helpers
 
             if (!payload.ContainsKey("role")) return false;
             role = Convert.ToString(payload["role"]);
+            plant = payload.ContainsKey("plant") ? Convert.ToString(payload["plant"]) : null;
             return true;
         }
 

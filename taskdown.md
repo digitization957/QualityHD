@@ -9,3 +9,6 @@
 - Full visual/UX redesign (dropped the apple-design motion approach): new teal + amber palette, Bahnschrift/Segoe UI Variable typography, stats strip (total/reactive/proactive/plants), live client-side search over the item list, pill-styled type & plant badges. Applied to both Login.aspx/Default.aspx and the preview artifact.
 - Redesigned UI/UX per frontend-design skill: pastel light palette (sage/amber/moss/clay on warm paper bg), no dark mode, refined cards/table/badges/modal radii, minimalist deployment-level polish across Login.aspx and Default.aspx.
 - Renamed page title/header from "HD Improvement Log" to "HD FD Tracker" in Default.aspx.
+- Added plant-aware auth: JWT now carries a `plant` claim (Login.aspx simulates picking it, since production DBs `access.login_tokenpass` + `plant_master.tbl_Plant` aren't reachable from dev); added PlantHelper.cs with the real production resolver query, ready to wire in once those DBs are reachable (connection strings added as placeholders in Web.config).
+- Default.aspx: added All / Own / Assigned filter pills — Own = items this plant logged (hd_source_plant), Assigned = items other plants logged that list this plant in hd_applicable_plants. GetItems WebMethod now takes a `scope` param and filters server-side with parameterized SQL (FIND_IN_SET).
+- Navbar now shows the logged-in plant next to the role chip.

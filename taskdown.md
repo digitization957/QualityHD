@@ -17,3 +17,4 @@
 - Row click on the item list now opens a read-only detail modal (GetItemDetails WebMethod) showing full core fields, description/analysis/action text, responsible persons, attachments, and a plant-wise ORC tracking table for all 6 plants.
 - All/Own/Assigned filter now has a smooth sliding highlight (segmented-control style) instead of an instant swap; item list fades briefly on scope/reload.
 - Replaced the always-visible Role/Plant chips + Logout button with a single user icon in the navbar; clicking it opens a popover showing Token, Role, Plant, and Logout.
+- Optimized layout for 720p displays: tighter navbar/stats/toolbar spacing, sticky table header with the item list scrolling in its own max-height panel (instead of the whole page), Add Item modal now uses modal-dialog-scrollable (pinned header/footer, only body scrolls), shorter fixed-height textareas.

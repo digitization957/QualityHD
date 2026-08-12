@@ -33,24 +33,24 @@
         }
         * { -webkit-font-smoothing: antialiased; }
         body { background: var(--paper); font-family: var(--font-body); color: var(--ink); }
-        .navbar { background: var(--surface) !important; border-bottom: 1px solid var(--line); padding-top: .85rem; padding-bottom: .85rem; }
+        .navbar { background: var(--surface) !important; border-bottom: 1px solid var(--line); padding-top: .6rem; padding-bottom: .6rem; }
         .navbar-brand { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.01em; color: var(--ink) !important; display: flex; align-items: center; gap: 0.65rem; }
         .brand-mark { width: 32px; height: 32px; border-radius: 9px; background: var(--sage); color: #fff; font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; }
         .role-chip { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; background: var(--sage-tint); color: var(--sage); padding: 0.32rem 0.7rem; border-radius: 100px; }
         h1, h2, h3, h5, .section-title { font-family: var(--font-display); }
 
-        .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.75rem; }
+        .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: .75rem; margin-bottom: 1rem; }
         @media (max-width: 820px) { .stats-row { grid-template-columns: repeat(2, 1fr); } }
-        .stat-tile { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 1.1rem 1.25rem; }
-        .stat-tile__label { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 0.4rem; }
-        .stat-tile__value { font-family: var(--font-display); font-size: 1.7rem; font-weight: 700; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; color: var(--ink); }
+        .stat-tile { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: .7rem 1rem; }
+        .stat-tile__label { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 0.25rem; }
+        .stat-tile__value { font-family: var(--font-display); font-size: 1.35rem; font-weight: 700; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; color: var(--ink); }
         .stat-tile__value.c-teal { color: var(--sage); }
         .stat-tile__value.c-gold { color: var(--amber); }
         .stat-tile__value.c-good { color: var(--moss); }
 
-        .table-responsive { background: var(--surface); border-radius: 14px; border: 1px solid var(--line); }
-        .table-light th { font-size: 0.68rem; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink-faint); font-weight: 600; background: var(--paper); border-bottom: 1px solid var(--line); }
-        .table > :not(caption) > * > * { padding: .75rem .85rem; }
+        .table-responsive { background: var(--surface); border-radius: 14px; border: 1px solid var(--line); max-height: calc(100vh - 260px); min-height: 220px; overflow-y: auto; }
+        .table-light th { position: sticky; top: 0; z-index: 2; font-size: 0.68rem; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink-faint); font-weight: 600; background: var(--paper); border-bottom: 1px solid var(--line); }
+        .table > :not(caption) > * > * { padding: .6rem .85rem; }
         .table-hover > tbody > tr:hover > * { background-color: var(--sage-tint); }
         .mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; color: var(--ink-soft); }
         .pill-plant { display: inline-block; font-size: 0.7rem; font-weight: 600; padding: 0.18rem 0.55rem; border-radius: 6px; background: var(--sky-tint); color: var(--sky); font-family: var(--font-mono); margin: 0 0.2rem 0.2rem 0; letter-spacing: 0.02em; }
@@ -92,14 +92,14 @@
         .view-orc-table td { padding: .5rem .6rem; border-bottom: 1px solid var(--line); vertical-align: top; }
         .view-orc-table tr:last-child td { border-bottom: none; }
 
-        .section-title { font-weight: 600; font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; margin-top: 1.75rem; margin-bottom: .85rem; padding-bottom: .5rem; border-bottom: 1px solid var(--line); color: var(--ink-soft); }
-        .plant-block { background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: .85rem; margin-bottom: .75rem; }
+        .section-title { font-weight: 600; font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; margin-top: 1.25rem; margin-bottom: .65rem; padding-bottom: .4rem; border-bottom: 1px solid var(--line); color: var(--ink-soft); }
+        .plant-block { background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: .65rem; margin-bottom: .6rem; }
         .plant-block strong { font-family: var(--font-mono); font-size: .78rem; letter-spacing: .04em; color: var(--sage); }
         .required-mark { color: var(--clay); }
 
         /* Fixed-height textareas: content scrolls inside instead of growing the box */
-        textarea.form-control { resize: none; overflow-y: auto; height: 5.2rem; }
-        textarea.plant-details { height: 3.4rem; }
+        textarea.form-control { resize: none; overflow-y: auto; height: 4.4rem; }
+        textarea.plant-details { height: 2.8rem; }
         .char-counter { display: block; text-align: right; font-size: .72rem; color: var(--ink-faint); margin-top: .2rem; }
         .char-counter.warn { color: var(--amber); }
         .char-counter.max { color: var(--clay); font-weight: 600; }
@@ -125,7 +125,7 @@
     </style>
 </head>
 <body>
-    <nav class="navbar mb-4">
+    <nav class="navbar mb-3">
         <div class="container-fluid">
             <span class="navbar-brand"><span class="brand-mark">HD</span> QualityHD &mdash; HD FD Tracker</span>
             <span class="user-menu">
@@ -148,7 +148,7 @@
             <div class="stat-tile"><div class="stat-tile__label">Plants covered</div><div class="stat-tile__value c-teal" id="statPlants">0</div></div>
         </div>
 
-        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
             <div class="d-flex align-items-center gap-2 flex-wrap">
                 <h5 class="mb-0 me-2">Improvement Items</h5>
                 <div class="scope-group" role="group" aria-label="Filter by plant" id="scopeGroup">
@@ -193,7 +193,7 @@
 
     <!-- Add New Item Modal -->
     <div class="modal fade" id="addItemModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-fullscreen-lg-down modal-xl">
+        <div class="modal-dialog modal-fullscreen-lg-down modal-xl modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Add New HD Improvement Item</h5>

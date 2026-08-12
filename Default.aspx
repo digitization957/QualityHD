@@ -181,7 +181,7 @@
             </div>
             <div class="d-flex align-items-center gap-2">
                 <input type="text" id="searchInput" class="form-control form-control-sm" style="width:220px;" placeholder="Search theme or plant…" />
-                <button type="button" id="btnAddNew" class="btn btn-primary">+ Add New Item</button>
+                <button type="button" id="btnAddNew" class="btn btn-primary text-nowrap flex-shrink-0">+ Add New Item</button>
             </div>
         </div>
 

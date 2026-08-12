@@ -20,3 +20,5 @@
 - Optimized layout for 720p displays: tighter navbar/stats/toolbar spacing, sticky table header with the item list scrolling in its own max-height panel (instead of the whole page), Add Item modal now uses modal-dialog-scrollable (pinned header/footer, only body scrolls), shorter fixed-height textareas.
 - Redesigned the user icon popover: avatar + plant name + role header, divider, token row, and a distinct clay-toned "Log out" button with icon (was a flat list of chips before).
 - Improvement Items table header is now bold and black (was uppercase grey).
+- Added 10 more demo items to the artifact preview (16 total) spread across all 6 plants for better scroll/filter testing.
+- Fixed "+ Add New Item" button text wrapping on narrow widths (text-nowrap + no shrink).

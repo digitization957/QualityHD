@@ -26,3 +26,4 @@
 - Redesigned the item detail modal: fixed a label bug where Description showed the HD Theme text; fields are now in clearly separated bordered boxes with proper label/value hierarchy instead of a cramped mixed layout.
 - Plant names are no longer hardcoded: added PlantHelper.GetAllPlants() + a GetPlants WebMethod (Default.aspx + Login.aspx) that reads from plant_master.tbl_Plant; Login's plant picker and the Add form's Source Plant/Applicable Plants are populated from it. Removed HdOptions.Plants.
 - NOTE: local plant_master DB not yet created — needs MySQL root access (app DB user only has rights on qualityhd). SQL script provided to user to run.
+- Created local plant_master DB + tbl_Plant table (seeded with all 6 plants) and a least-privilege plantmaster_app user (SELECT only); wired PlantMasterConnection in Web.config to it. Plant dropdowns now genuinely read from MySQL instead of hardcoded lists.

@@ -18,6 +18,15 @@ namespace QualityHD
 
         private static readonly Regex EmailPattern = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
 
+        // Plant names always come from plant_master.tbl_Plant — never hardcoded.
+        [WebMethod(EnableSession = false)]
+        [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
+        public static object GetPlants()
+        {
+            AuthHelper.RequireRole();
+            return PlantHelper.GetAllPlants();
+        }
+
         // scope: "own" = items this plant logged, "assigned" = items logged
         // elsewhere but applicable to this plant, anything else/null = all items.
         [WebMethod(EnableSession = false)]
@@ -152,9 +161,11 @@ namespace QualityHD
 
             if (item == null) throw new InvalidOperationException("No data received.");
 
+            var validPlantNames = PlantHelper.GetAllPlants().Select(p => p.name).ToArray();
+
             string hdTheme = Require(item.hdTheme, "HD Theme", 255);
             string improvementType = RequireOneOf(item.improvementType, HdOptions.ImprovementTypes, "Improvement Type");
-            string hdSourcePlant = RequireOneOf(item.hdSourcePlant, HdOptions.Plants, "HD Source Plant");
+            string hdSourcePlant = RequireOneOf(item.hdSourcePlant, validPlantNames, "HD Source Plant");
             string aggregateType = RequireOneOf(item.aggregateType, HdOptions.Aggregates, "Aggregate");
             string description = Require(item.description, "Description", 250);
             string modelFamily = RequireOneOf(item.modelFamily, HdOptions.ModelFamilies, "Model Family");
@@ -163,7 +174,7 @@ namespace QualityHD
             string analysisDetails = Require(item.analysisDetails, "Analysis details", 250);
             string actionDetails = Require(item.actionDetails, "Action / Improvement details", 250);
             string improvementCategory = RequireOneOf(item.improvementCategory, HdOptions.ImprovementCategories, "Improvement Category");
-            string hdApplicablePlants = RequireMultiOf(item.hdApplicablePlants, HdOptions.Plants, "HD Applicable Plants");
+            string hdApplicablePlants = RequireMultiOf(item.hdApplicablePlants, validPlantNames, "HD Applicable Plants");
             string responsiblePersons = RequireEmails(item.responsiblePersons, "Responsible persons for HD");
 
             string ngpStatus = OptionalOneOf(item.ngpOrcStatus, HdOptions.OrcStatuses, "Open");

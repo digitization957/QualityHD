@@ -8,8 +8,32 @@ function generateFakeToken() {
     });
 }
 
+function loadPlants() {
+    var $select = $('#ddlPlant');
+    $.ajax({
+        type: 'POST',
+        url: 'Login.aspx/GetPlants',
+        data: '{}',
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json'
+    }).done(function (response) {
+        var plants = response.d || [];
+        $select.empty();
+        $.each(plants, function (i, p) {
+            $('<option>').val(p.name).text(p.name).appendTo($select);
+        });
+        if (plants.length === 0) {
+            $select.append('<option value="">No plants found</option>');
+        }
+    }).fail(function () {
+        $select.empty().append('<option value="">Could not load plants</option>');
+        $('#loginError').removeClass('d-none').text('Could not load plants from plant_master. Please refresh.');
+    });
+}
+
 $(function () {
     $('#txtToken').val(generateFakeToken());
+    loadPlants();
 
     $('#btnEnter').on('click', function () {
         var $btn = $(this).prop('disabled', true);

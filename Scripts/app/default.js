@@ -145,7 +145,7 @@ $('#itemsBody').on('click', 'tr', function () {
 });
 
 function fieldBlock(label, value) {
-    return '<div><div class="view-field__label">' + escapeHtml(label) + '</div><div class="view-field__value">' + escapeHtml(value || '—') + '</div></div>';
+    return '<div class="view-field"><div class="view-field__label">' + escapeHtml(label) + '</div><div class="view-field__value">' + escapeHtml(value || '—') + '</div></div>';
 }
 
 function textBlock(label, value) {
@@ -173,15 +173,19 @@ function openViewModal(id) {
 }
 
 function renderViewModal(item) {
-    $('#viewTitle').text('#' + item.id + ' — ' + item.hdTheme);
+    $('#viewTitle').text('HD Item #' + item.id);
 
     var typePillClass = item.improvementType === 'Reactive' ? 'pill-type-reactive' : 'pill-type-proactive';
     var meta =
         '<div class="view-meta">' +
+        '<div class="view-meta__top">' +
         '<span class="pill-type ' + typePillClass + '">' + escapeHtml(item.improvementType) + '</span>' +
         '<span class="pill-plant">Source: ' + escapeHtml(item.hdSourcePlant) + '</span>' +
-        '<span class="text-muted small ms-auto">Logged by ' + escapeHtml(item.createdByRole) + ' &middot; ' + escapeHtml(item.createdAt) + '</span>' +
+        '</div>' +
+        '<div class="view-meta__by">Logged by ' + escapeHtml(item.createdByRole) + ' &middot; ' + escapeHtml(item.createdAt) + '</div>' +
         '</div>';
+
+    var theme = textBlock('HD Theme', item.hdTheme);
 
     var grid =
         '<div class="view-grid">' +
@@ -194,7 +198,7 @@ function renderViewModal(item) {
         '</div>';
 
     var body =
-        meta + grid +
+        meta + theme + grid +
         textBlock('Description', item.description) +
         textBlock('Analysis details', item.analysisDetails) +
         textBlock('Action / Improvement details', item.actionDetails) +
@@ -262,8 +266,43 @@ function updateCharCounter() {
 
 $(document).on('input', '.char-limited', updateCharCounter);
 
+// Plant names are never hardcoded — always loaded from plant_master.tbl_Plant
+// via GetPlants, and used to populate both the source-plant select and the
+// applicable-plants checkboxes.
+function loadPlantsForForm() {
+    var $source = $('#hdSourcePlant');
+    var $group = $('#applicablePlantsGroup');
+    $source.find('option[value!=""]').remove();
+    $group.empty();
+
+    return authAjax({
+        type: 'POST',
+        url: 'Default.aspx/GetPlants',
+        data: '{}',
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json'
+    }).done(function (response) {
+        var plants = response.d || [];
+        $.each(plants, function (i, p) {
+            $('<option>').val(p.name).text(p.name).appendTo($source);
+
+            var checkId = 'plant-' + p.name;
+            $('<div class="form-check">').append(
+                $('<input class="form-check-input plant-check" type="checkbox">').attr({ value: p.name, id: checkId }),
+                $('<label class="form-check-label">').attr('for', checkId).text(p.name)
+            ).appendTo($group);
+        });
+        if (plants.length === 0) {
+            $group.append('<div class="text-danger small">No plants found in plant_master.</div>');
+        }
+    }).fail(function () {
+        $group.append('<div class="text-danger small">Could not load plants from plant_master.</div>');
+    });
+}
+
 $('#btnAddNew').on('click', function () {
     resetForm();
+    loadPlantsForForm();
     new bootstrap.Modal(document.getElementById('addItemModal')).show();
 });
 
@@ -296,15 +335,6 @@ $('#attachmentFiles').on('change', function () {
     $(this).val('');
 });
 
-function collectPlantData(blockSelector) {
-    var $block = $(blockSelector);
-    return {
-        status: $block.find('.plant-status').val(),
-        details: $block.find('.plant-details').val(),
-        date: $block.find('.plant-date').val()
-    };
-}
-
 $('#btnSaveItem').on('click', function () {
     $('#formError').addClass('d-none').text('');
 
@@ -319,13 +349,6 @@ $('#btnSaveItem').on('click', function () {
         $('#formError').removeClass('d-none').text('Please select at least one HD Applicable Plant.');
         return;
     }
-
-    var ngp = collectPlantData('[data-plant="ngp"]');
-    var zhb = collectPlantData('[data-plant="zhb"]');
-    var rdp = collectPlantData('[data-plant="rdp"]');
-    var jpr = collectPlantData('[data-plant="jpr"]');
-    var rjk = collectPlantData('[data-plant="rjk"]');
-    var knd = collectPlantData('[data-plant="knd"]');
 
     var payload = {
         item: {
@@ -342,14 +365,6 @@ $('#btnSaveItem').on('click', function () {
             improvementCategory: $('#improvementCategory').val(),
             hdApplicablePlants: applicablePlants.join(','),
             responsiblePersons: $('#responsiblePersons').val(),
-
-            ngpOrcStatus: ngp.status, ngpHdDetails: ngp.details, ngpTargetDate: ngp.date,
-            zhbOrcStatus: zhb.status, zhbHdDetails: zhb.details, zhbTargetDate: zhb.date,
-            rdpOrcStatus: rdp.status, rdpHdDetails: rdp.details, rdpTargetDate: rdp.date,
-            jprOrcStatus: jpr.status, jprHdDetails: jpr.details, jprTargetDate: jpr.date,
-            rjkOrcStatus: rjk.status, rjkHdDetails: rjk.details, rjkTargetDate: rjk.date,
-            kndOrcStatus: knd.status, kndHdDetails: knd.details, kndTargetDate: knd.date,
-
             attachments: uploadedAttachments.join(',')
         }
     };

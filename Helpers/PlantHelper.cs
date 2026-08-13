@@ -1,15 +1,33 @@
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using MySqlConnector;
 
 namespace QualityHD.Helpers
 {
-    // Resolves which plant a launcher token belongs to, using the two
-    // production-only DBs. Not reachable in this dev environment yet —
-    // wire real host/creds into Web.config (AccessConnection / PlantMasterConnection)
-    // before go-live.
+    // Resolves plant info from the plant_master DB — the app never hardcodes
+    // plant names, they always come from plant_master.tbl_Plant.
     public static class PlantHelper
     {
+        // plant_master.tbl_Plant: Plant_ID, Plant_Name
+        public static List<PlantInfo> GetAllPlants()
+        {
+            var plants = new List<PlantInfo>();
+            using (var conn = new MySqlConnection(ConfigurationManager.ConnectionStrings["PlantMasterConnection"].ConnectionString))
+            {
+                conn.Open();
+                using (var cmd = new MySqlCommand("SELECT Plant_ID, Plant_Name FROM tbl_Plant ORDER BY Plant_Name", conn))
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        plants.Add(new PlantInfo { id = reader.GetInt32(0), name = reader.GetString(1) });
+                    }
+                }
+            }
+            return plants;
+        }
+
         // access.login_tokenpass: Token, Plant_ID
         // plant_master.tbl_Plant: Plant_ID, Plant_Name
         public static string ResolvePlantByToken(string launcherToken)
@@ -40,5 +58,11 @@ namespace QualityHD.Helpers
                 }
             }
         }
+    }
+
+    public class PlantInfo
+    {
+        public int id { get; set; }
+        public string name { get; set; }
     }
 }

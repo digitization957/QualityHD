@@ -22,3 +22,7 @@
 - Improvement Items table header is now bold and black (was uppercase grey).
 - Added 10 more demo items to the artifact preview (16 total) spread across all 6 plants for better scroll/filter testing.
 - Fixed "+ Add New Item" button text wrapping on narrow widths (text-nowrap + no shrink).
+- Removed "Plant-wise ORC Tracking" from the Add New Item form (both app and preview) — it's not part of creating an item, only shown read-only in the item detail view.
+- Redesigned the item detail modal: fixed a label bug where Description showed the HD Theme text; fields are now in clearly separated bordered boxes with proper label/value hierarchy instead of a cramped mixed layout.
+- Plant names are no longer hardcoded: added PlantHelper.GetAllPlants() + a GetPlants WebMethod (Default.aspx + Login.aspx) that reads from plant_master.tbl_Plant; Login's plant picker and the Add form's Source Plant/Applicable Plants are populated from it. Removed HdOptions.Plants.
+- NOTE: local plant_master DB not yet created — needs MySQL root access (app DB user only has rights on qualityhd). SQL script provided to user to run.

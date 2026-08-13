@@ -60,14 +60,9 @@
             <div class="mb-4">
                 <label for="ddlPlant" class="form-label">Plant</label>
                 <select id="ddlPlant" class="form-select">
-                    <option value="NGP" selected="selected">NGP</option>
-                    <option value="ZHB">ZHB</option>
-                    <option value="RDP">RDP</option>
-                    <option value="JPR">JPR</option>
-                    <option value="RJK">RJK</option>
-                    <option value="KND">KND</option>
+                    <option value="">Loading plants…</option>
                 </select>
-                <div class="form-text">Stands in for the plant the real launcher resolves from your token.</div>
+                <div class="form-text">Stands in for the plant the real launcher resolves from your token. Loaded from plant_master.tbl_Plant.</div>
             </div>
 
             <div id="loginError" class="alert alert-danger d-none small"></div>

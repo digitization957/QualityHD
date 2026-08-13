@@ -88,17 +88,20 @@
         .user-popover__logout:hover { filter: brightness(0.97); }
 
         /* View item modal */
-        .view-meta { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; margin-bottom: 1.1rem; }
-        .view-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: .9rem; margin-bottom: 1.1rem; }
+        .view-meta { display: flex; flex-direction: column; gap: .4rem; margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 1px solid var(--line); }
+        .view-meta__top { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
+        .view-meta__by { font-size: .78rem; color: var(--ink-faint); }
+        .view-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: .6rem; margin-bottom: 1.25rem; }
         @media (max-width: 700px) { .view-grid { grid-template-columns: repeat(2, 1fr); } }
-        .view-field__label { font-size: .68rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: .25rem; }
-        .view-field__value { font-size: .88rem; color: var(--ink); }
-        .view-block { margin-bottom: 1.1rem; }
-        .view-block__label { font-size: .74rem; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-soft); margin-bottom: .35rem; border-bottom: 1px solid var(--line); padding-bottom: .35rem; }
-        .view-block__text { font-size: .86rem; color: var(--ink); white-space: pre-wrap; line-height: 1.5; }
-        .view-orc-table { width: 100%; border-collapse: collapse; font-size: .82rem; }
-        .view-orc-table th { text-align: left; font-size: .66rem; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-faint); border-bottom: 1px solid var(--line); padding: .5rem .6rem; }
-        .view-orc-table td { padding: .5rem .6rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+        .view-field { background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: .55rem .7rem; }
+        .view-field__label { font-size: .64rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: .3rem; }
+        .view-field__value { font-size: .86rem; font-weight: 500; color: var(--ink); }
+        .view-block { margin-bottom: 1.25rem; }
+        .view-block__label { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--sage); margin-bottom: .4rem; }
+        .view-block__text { font-size: .87rem; color: var(--ink); white-space: pre-wrap; line-height: 1.55; background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: .65rem .8rem; }
+        .view-orc-table { width: 100%; border-collapse: collapse; font-size: .82rem; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+        .view-orc-table th { text-align: left; font-size: .64rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-faint); background: var(--paper); border-bottom: 1px solid var(--line); padding: .55rem .65rem; }
+        .view-orc-table td { padding: .55rem .65rem; border-bottom: 1px solid var(--line); vertical-align: top; color: var(--ink); }
         .view-orc-table tr:last-child td { border-bottom: none; }
 
         .section-title { font-weight: 600; font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; margin-top: 1.25rem; margin-bottom: .65rem; padding-bottom: .4rem; border-bottom: 1px solid var(--line); color: var(--ink-soft); }
@@ -241,8 +244,6 @@
                                 <label class="form-label">HD Source Plant <span class="required-mark">*</span></label>
                                 <select class="form-select" id="hdSourcePlant" required>
                                     <option value="">Select</option>
-                                    <option>NGP</option><option>ZHB</option><option>RDP</option>
-                                    <option>JPR</option><option>RJK</option><option>KND</option>
                                 </select>
                             </div>
 
@@ -308,14 +309,7 @@
                             <div class="col-12">
                                 <label class="form-label">HD Applicable Plants <span class="required-mark">*</span></label>
                                 <div class="form-text mb-1">Select all applicable plants; if unsure, select all.</div>
-                                <div class="d-flex flex-wrap gap-3">
-                                    <div class="form-check"><input class="form-check-input plant-check" type="checkbox" value="NGP" id="plantNGP"><label class="form-check-label" for="plantNGP">NGP</label></div>
-                                    <div class="form-check"><input class="form-check-input plant-check" type="checkbox" value="ZHB" id="plantZHB"><label class="form-check-label" for="plantZHB">ZHB</label></div>
-                                    <div class="form-check"><input class="form-check-input plant-check" type="checkbox" value="RDP" id="plantRDP"><label class="form-check-label" for="plantRDP">RDP</label></div>
-                                    <div class="form-check"><input class="form-check-input plant-check" type="checkbox" value="JPR" id="plantJPR"><label class="form-check-label" for="plantJPR">JPR</label></div>
-                                    <div class="form-check"><input class="form-check-input plant-check" type="checkbox" value="RJK" id="plantRJK"><label class="form-check-label" for="plantRJK">RJK</label></div>
-                                    <div class="form-check"><input class="form-check-input plant-check" type="checkbox" value="KND" id="plantKND"><label class="form-check-label" for="plantKND">KND</label></div>
-                                </div>
+                                <div class="d-flex flex-wrap gap-3" id="applicablePlantsGroup"></div>
                             </div>
 
                             <div class="col-12">
@@ -329,102 +323,6 @@
                                 <input type="file" class="form-control" id="attachmentFiles" multiple accept=".pdf,.png,.jpg,.jpeg,.doc,.docx,.xls,.xlsx" />
                                 <div class="form-text">PDF, Office docs or images, up to 10 MB each.</div>
                                 <div id="attachmentList" class="mt-2 small"></div>
-                            </div>
-                        </div>
-
-                        <div class="section-title">Plant-wise ORC Tracking</div>
-                        <div class="row g-3">
-                            <div class="col-md-6" data-plant="ngp">
-                                <div class="plant-block">
-                                    <strong>NGP</strong>
-                                    <div class="row g-2 mt-1">
-                                        <div class="col-4">
-                                            <label class="form-label small mb-0">ORC Status</label>
-                                            <select class="form-select form-select-sm plant-status">
-                                                <option>Open</option><option>R1</option><option>R2</option><option>Closed</option><option>Initiator</option><option>Not Applicable</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-4">
-                                            <label class="form-label small mb-0">Target date</label>
-                                            <input type="date" class="form-control form-control-sm plant-date" />
-                                        </div>
-                                        <div class="col-12">
-                                            <label class="form-label small mb-0">HD details</label>
-                                            <textarea class="form-control form-control-sm plant-details char-limited" maxlength="250"></textarea>
-                                            <span class="char-counter">0 / 250</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6" data-plant="zhb">
-                                <div class="plant-block">
-                                    <strong>ZHB</strong>
-                                    <div class="row g-2 mt-1">
-                                        <div class="col-4"><label class="form-label small mb-0">ORC Status</label>
-                                            <select class="form-select form-select-sm plant-status">
-                                                <option>Open</option><option>R1</option><option>R2</option><option>Closed</option><option>Initiator</option><option>Not Applicable</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-4"><label class="form-label small mb-0">Target date</label><input type="date" class="form-control form-control-sm plant-date" /></div>
-                                        <div class="col-12"><label class="form-label small mb-0">HD details</label><textarea class="form-control form-control-sm plant-details char-limited" maxlength="250"></textarea><span class="char-counter">0 / 250</span></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6" data-plant="rdp">
-                                <div class="plant-block">
-                                    <strong>RDP</strong>
-                                    <div class="row g-2 mt-1">
-                                        <div class="col-4"><label class="form-label small mb-0">ORC Status</label>
-                                            <select class="form-select form-select-sm plant-status">
-                                                <option>Open</option><option>R1</option><option>R2</option><option>Closed</option><option>Initiator</option><option>Not Applicable</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-4"><label class="form-label small mb-0">Target date</label><input type="date" class="form-control form-control-sm plant-date" /></div>
-                                        <div class="col-12"><label class="form-label small mb-0">HD details</label><textarea class="form-control form-control-sm plant-details char-limited" maxlength="250"></textarea><span class="char-counter">0 / 250</span></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6" data-plant="jpr">
-                                <div class="plant-block">
-                                    <strong>JPR</strong>
-                                    <div class="row g-2 mt-1">
-                                        <div class="col-4"><label class="form-label small mb-0">ORC Status</label>
-                                            <select class="form-select form-select-sm plant-status">
-                                                <option>Open</option><option>R1</option><option>R2</option><option>Closed</option><option>Initiator</option><option>Not Applicable</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-4"><label class="form-label small mb-0">Target date</label><input type="date" class="form-control form-control-sm plant-date" /></div>
-                                        <div class="col-12"><label class="form-label small mb-0">HD details</label><textarea class="form-control form-control-sm plant-details char-limited" maxlength="250"></textarea><span class="char-counter">0 / 250</span></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6" data-plant="rjk">
-                                <div class="plant-block">
-                                    <strong>RJK</strong>
-                                    <div class="row g-2 mt-1">
-                                        <div class="col-4"><label class="form-label small mb-0">ORC Status</label>
-                                            <select class="form-select form-select-sm plant-status">
-                                                <option>Not Applicable</option><option>Open</option><option>R1</option><option>R2</option><option>Closed</option><option>Initiator</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-4"><label class="form-label small mb-0">Target date</label><input type="date" class="form-control form-control-sm plant-date" /></div>
-                                        <div class="col-12"><label class="form-label small mb-0">HD details</label><textarea class="form-control form-control-sm plant-details char-limited" maxlength="250"></textarea><span class="char-counter">0 / 250</span></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6" data-plant="knd">
-                                <div class="plant-block">
-                                    <strong>KND</strong>
-                                    <div class="row g-2 mt-1">
-                                        <div class="col-4"><label class="form-label small mb-0">ORC Status</label>
-                                            <select class="form-select form-select-sm plant-status">
-                                                <option>Not Applicable</option><option>Open</option><option>R1</option><option>R2</option><option>Closed</option><option>Initiator</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-4"><label class="form-label small mb-0">Target date</label><input type="date" class="form-control form-control-sm plant-date" /></div>
-                                        <div class="col-12"><label class="form-label small mb-0">HD details</label><textarea class="form-control form-control-sm plant-details char-limited" maxlength="250"></textarea><span class="char-counter">0 / 250</span></div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </form>

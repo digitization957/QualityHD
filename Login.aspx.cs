@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web.Script.Services;
 using System.Web.Services;
@@ -15,9 +16,18 @@ namespace QualityHD
         {
         }
 
+        // Plant names always come from plant_master.tbl_Plant — never hardcoded.
+        // The launcher-side plant picker on this simulated login page is populated from this.
+        [WebMethod(EnableSession = false)]
+        [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
+        public static object GetPlants()
+        {
+            return PlantHelper.GetAllPlants();
+        }
+
         // In production the real launcher hands off token+role, and this app
         // resolves the plant itself via PlantHelper (access.login_tokenpass ->
-        // plant_master.tbl_Plant). Those DBs aren't reachable in dev, so this
+        // plant_master.tbl_Plant). The access DB isn't reachable in dev, so this
         // simulated launcher lets the plant be picked manually instead.
         [WebMethod(EnableSession = false)]
         [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
@@ -26,7 +36,8 @@ namespace QualityHD
             if (string.IsNullOrWhiteSpace(token) || !TokenPattern.IsMatch(token))
                 throw new InvalidOperationException("Invalid token format.");
 
-            if (string.IsNullOrWhiteSpace(plant) || Array.IndexOf(HdOptions.Plants, plant) < 0)
+            var validPlantNames = PlantHelper.GetAllPlants().Select(p => p.name).ToArray();
+            if (string.IsNullOrWhiteSpace(plant) || Array.IndexOf(validPlantNames, plant) < 0)
                 throw new InvalidOperationException("Invalid plant.");
 
             string jwt = JwtHelper.Issue(token, OnlyRole, plant);

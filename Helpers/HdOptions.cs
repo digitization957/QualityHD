@@ -6,7 +6,8 @@ namespace QualityHD.Helpers
     {
         public static readonly string[] ImprovementTypes = { "Reactive", "Proactive" };
 
-        public static readonly string[] Plants = { "NGP", "ZHB", "RDP", "JPR", "RJK", "KND" };
+        // Plant names are never hardcoded — always fetched from plant_master.tbl_Plant
+        // via PlantHelper.GetAllPlants().
 
         public static readonly string[] Aggregates = {
             "Tractor", "Transmission", "Engine", "VTU Assembly", "CV Assembly",

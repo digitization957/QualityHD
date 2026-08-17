@@ -53,16 +53,14 @@
             <p class="text-muted small mb-4">This stands in for the real portal that hands off a signed token &amp; role when a user launches this app.</p>
 
             <div class="mb-3">
-                <label for="txtToken" class="form-label">Token</label>
-                <input type="text" id="txtToken" class="form-control" readonly />
+                <label for="ddlToken" class="form-label">Token</label>
+                <select id="ddlToken" class="form-select"></select>
             </div>
 
             <div class="mb-4">
                 <label for="ddlPlant" class="form-label">Plant</label>
-                <select id="ddlPlant" class="form-select">
-                    <option value="">Loading plants…</option>
-                </select>
-                <div class="form-text">Stands in for the plant the real launcher resolves from your token. Loaded from plant_master.tbl_Plant.</div>
+                <select id="ddlPlant" class="form-select"></select>
+                <div class="form-text">Demo dropdown — stands in for the plant the real launcher resolves from your token.</div>
             </div>
 
             <div id="loginError" class="alert alert-danger d-none small"></div>

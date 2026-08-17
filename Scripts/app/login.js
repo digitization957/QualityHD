@@ -1,39 +1,15 @@
-function generateFakeToken() {
-    if (window.crypto && window.crypto.randomUUID) {
-        return window.crypto.randomUUID();
-    }
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-        var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
-        return v.toString(16);
-    });
-}
-
-function loadPlants() {
-    var $select = $('#ddlPlant');
-    $.ajax({
-        type: 'POST',
-        url: 'Login.aspx/GetPlants',
-        data: '{}',
-        contentType: 'application/json; charset=utf-8',
-        dataType: 'json'
-    }).done(function (response) {
-        var plants = response.d || [];
-        $select.empty();
-        $.each(plants, function (i, p) {
-            $('<option>').val(p.name).text(p.name).appendTo($select);
-        });
-        if (plants.length === 0) {
-            $select.append('<option value="">No plants found</option>');
-        }
-    }).fail(function () {
-        $select.empty().append('<option value="">Could not load plants</option>');
-        $('#loginError').removeClass('d-none').text('Could not load plants from plant_master. Please refresh.');
-    });
-}
+// DEMO MODE: token + plant are hardcoded dropdowns (no DB call) so this
+// page works even when plant_master isn't reachable. Server still
+// whitelists both values against the same lists in Login.aspx.cs.
+var DEMO_TOKENS = ['DEMO-TOKEN-0001', 'DEMO-TOKEN-0002', 'DEMO-TOKEN-0003'];
+var DEMO_PLANTS = ['NGP', 'ZHB', 'RDP', 'JPR', 'RJK', 'KND'];
 
 $(function () {
-    $('#txtToken').val(generateFakeToken());
-    loadPlants();
+    var $token = $('#ddlToken');
+    $.each(DEMO_TOKENS, function (i, t) { $('<option>').val(t).text(t).appendTo($token); });
+
+    var $plant = $('#ddlPlant');
+    $.each(DEMO_PLANTS, function (i, p) { $('<option>').val(p).text(p).appendTo($plant); });
 
     $('#btnEnter').on('click', function () {
         var $btn = $(this).prop('disabled', true);
@@ -42,7 +18,7 @@ $(function () {
         $.ajax({
             type: 'POST',
             url: 'Login.aspx/GenerateToken',
-            data: JSON.stringify({ token: $('#txtToken').val(), plant: $('#ddlPlant').val() }),
+            data: JSON.stringify({ token: $token.val(), plant: $plant.val() }),
             contentType: 'application/json; charset=utf-8',
             dataType: 'json'
         }).done(function (response) {

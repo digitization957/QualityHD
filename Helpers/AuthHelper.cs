@@ -20,11 +20,17 @@ namespace QualityHD.Helpers
         {
             string authHeader = HttpContext.Current.Request.Headers["Authorization"];
             if (string.IsNullOrWhiteSpace(authHeader) || !authHeader.StartsWith("Bearer "))
+            {
+                HttpContext.Current.Response.StatusCode = 401;
                 throw new UnauthorizedAccessException("Missing session token.");
+            }
 
             string token = authHeader.Substring("Bearer ".Length).Trim();
             if (!JwtHelper.TryValidate(token, out role, out plant))
+            {
+                HttpContext.Current.Response.StatusCode = 401;
                 throw new UnauthorizedAccessException("Session expired or invalid. Please sign in again.");
+            }
         }
     }
 }
